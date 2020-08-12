@@ -1,0 +1,14 @@
+/**
+ * 
+ */
+package entitiesip;
+
+import java.io.Serializable;
+
+/**
+ * @author massa
+ *
+ */
+public class Word implements Serializable {
+
+}

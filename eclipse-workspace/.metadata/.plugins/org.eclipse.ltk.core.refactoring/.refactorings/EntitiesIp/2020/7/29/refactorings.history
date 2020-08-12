@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;entitiesip.RandomLetter&apos; to &apos;RandomChar&apos;&#x0D;&#x0A;- Original project: &apos;EntitiesIp&apos;&#x0D;&#x0A;- Original element: &apos;entitiesip.RandomLetter&apos;&#x0D;&#x0A;- Renamed element: &apos;entitiesip.RandomChar&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;RandomLetter&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;entitiesip{RandomLetter.java[RandomLetter" matchStrategy="1" name="RandomChar" qualified="false" references="true" similarDeclarations="false" stamp="1594886525813" textual="false" version="1.0"/>
+</session>

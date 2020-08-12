@@ -1,0 +1,65 @@
+import java.awt.EventQueue;
+import java.awt.Font;
+
+import javax.swing.JFrame;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.border.BevelBorder;
+import javax.swing.table.DefaultTableModel;
+
+public class Prova {
+
+	private JFrame frame;
+	private JTable table;
+	/**
+	 * Launch the application.
+	 */
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Prova window = new Prova();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+	/**
+	 * Create the application.
+	 */
+	public Prova() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+		table = new JTable();
+		table = new JTable();
+
+		table.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
+		table.setFont(new Font("Arial Black", Font.BOLD, 10));
+		table.setModel(new DefaultTableModel(
+				new Object[][] {
+				},
+				new String[] {
+						"GIOCATORI","PUNTI"
+				}
+				));
+		table.setBounds(10, 44, 164, 182);
+		table.getTableHeader().setReorderingAllowed(false); // non consentire il riordino delle colonne
+		table.getTableHeader().setResizingAllowed(false); // ridimensionamento non consentito
+		table.setDefaultEditor(Object.class,null);
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setBounds(29, 22, 369, 150);
+		frame.getContentPane().add(scrollPane);
+	
+	
+	
+	
+	
+	
+	
+	}
+}

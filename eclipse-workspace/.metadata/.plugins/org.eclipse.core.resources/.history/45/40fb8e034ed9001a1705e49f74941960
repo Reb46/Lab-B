@@ -1,0 +1,87 @@
+import java.awt.EventQueue;
+import java.util.Timer;
+import java.util.TimerTask;
+
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+
+public class Prova {
+
+	private JFrame frame;
+	JLabel lblMin;
+	JLabel lblSec;
+	int sec = 0;
+	int min = 3;
+
+	boolean flag =true;
+	public static void main(String[] args) {
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					Prova window = new Prova();
+					window.frame.setVisible(true);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
+
+
+	public Prova() {
+		frame = new JFrame();
+		frame.setBounds(100, 100, 450, 300);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.getContentPane().setLayout(null);
+
+		lblMin = new JLabel("");
+		lblMin.setBounds(22, 61, 113, 31);
+		frame.getContentPane().add(lblMin);
+
+		lblSec = new JLabel("");
+		lblSec.setBounds(164, 61, 113, 31);
+		frame.getContentPane().add(lblSec);
+		timer();
+
+	}
+
+
+	public  void timer() {
+
+
+
+
+		lblMin.setText("" + min);
+		lblSec.setText("" + sec);
+
+		while(true) {
+
+			if(sec == 0 && min !=0) {
+
+
+
+				sec = 5;
+				min = min-1;
+			}
+			lblMin.setText("" + min);
+			lblSec.setText("" + sec--);
+			if (sec == 0 && min ==0) {
+				break;
+			}
+
+		}
+	}
+
+
+
+
+}
+
+
+
+
+
+
+
+
+

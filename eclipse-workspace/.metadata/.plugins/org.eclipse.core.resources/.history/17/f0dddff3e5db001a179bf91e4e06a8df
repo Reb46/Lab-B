@@ -1,0 +1,557 @@
+package clientip;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.Socket;
+import java.util.ArrayList;
+
+import entitiesip.CommCommands;
+import entitiesip.Game;
+import entitiesip.InterfaceServer;
+import entitiesip.Match;
+import entitiesip.UserIp;
+import entitiesip.Word;
+
+
+
+public class Proxy implements InterfaceServer {
+
+	private ObjectInputStream ois;
+	private ObjectOutputStream ous;
+	private Socket socket;
+
+
+	public Proxy() throws IOException {
+		int port = 8080;
+		InetAddress inetAddress =  InetAddress.getByName(null);
+		this.socket = new Socket(inetAddress, port);
+		ous = new ObjectOutputStream(socket.getOutputStream()); // restituisce un flusso di output
+		ois = new ObjectInputStream(socket.getInputStream()); // restituisce un flusso di input
+	}
+
+
+	@Override
+	public String registerUser(UserIp userIp) {
+		try {
+			ous.writeObject(CommCommands.CREATEACCOUNT);
+			ous.writeObject(userIp);
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
+		}
+	}
+
+
+	@Override
+	public String activeUser(String nickName,String code) {
+		try {
+
+			ous.writeObject(CommCommands.ACTIVATION);
+			String [] parameters = {nickName,code};
+			ous.writeObject(parameters);
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
+		}
+
+	}
+
+	@Override
+	public String login(String email, String password,String type) {
+		try {
+			ous.writeObject(CommCommands.LOGIN);
+			String[] parameters = {email,password,type};
+			ous.writeObject(parameters);
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String loginAdmin(String uid, String password, String type) {
+		try {
+			ous.writeObject(CommCommands.LOGINADMIN);
+			String[] parameters = {uid,password,type};
+			ous.writeObject(parameters);
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Error: " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String checkEmail(String email) {
+		try {
+			ous.writeObject(CommCommands.CHECKEMAIL);
+			String parameter = email;
+			ous.writeObject(parameter);
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String checkNick(String nickName) {
+		try {
+			ous.writeObject(CommCommands.CHECKNICK);
+			String parameter = nickName;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String resetPassword(String email) {
+		try {
+			ous.writeObject(CommCommands.RESETPASSWORD);	
+			ous.writeObject(email);
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+	@Override
+	public String getName(String email) {
+		try {
+			ous.writeObject(CommCommands.GETNAME);
+			String parameter = email;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+
+	}
+
+	@Override
+	public String editName(String email, String name) {
+		try {
+			ous.writeObject(CommCommands.EDITNAME);
+			String[] parameters = {email,name};
+			ous.writeObject(parameters);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String editSurname(String email, String surname) {
+		try {
+			ous.writeObject(CommCommands.EDITSURNAME);
+			String[] parameters = {email,surname};
+			ous.writeObject(parameters);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String editNick(String email, String nickName) {
+		try {
+			ous.writeObject(CommCommands.EDITNICK);
+			String[] parameters = {email,nickName};
+			ous.writeObject(parameters);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+	@Override
+	public String updateIscritti(String nameGame) {
+		try {
+			ous.writeObject(CommCommands.UPDATEISCRITTI);
+			String parameter = nameGame;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+	@Override
+	public String editPassword(String email, String password) {
+		try {
+			ous.writeObject(CommCommands.EDITPASSWORD);
+			String[] parameters = {email,password};
+			ous.writeObject(parameters);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+
+	@Override
+	public String editPasswordAdmin(String uid, String password) {
+		try {
+			ous.writeObject(CommCommands.EDITPASSWORDADMIN);
+			String[] parameters = {uid,password};
+			ous.writeObject(parameters);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+	@Override
+	public String getSurname(String email) {
+		try {
+			ous.writeObject(CommCommands.GETSURNAME);
+			String parameter = email;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String getNick(String email) {
+		try {
+			ous.writeObject(CommCommands.GETNICK);
+			String parameter = email;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+
+
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+	@Override
+	public String getAdmin(String type) {
+		try {
+			ous.writeObject(CommCommands.GETADMIN);
+			String parameter = type;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+
+
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String checkPassword(String email,String password) {
+		try {
+			ous.writeObject(CommCommands.CHECKPASSWORD);
+			String[] parameters = {email,password};
+			ous.writeObject(parameters);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String checkPasswordAdmin(String uid, String password) {
+		try {
+			ous.writeObject(CommCommands.CHECKPASSWORDADMIN);
+			String[] parameters = {uid,password};
+			ous.writeObject(parameters);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+	@Override
+	public String createNewGame(Game newGame) {
+		try {
+			ous.writeObject(CommCommands.NEWGAME);
+			ous.writeObject(newGame);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<Game> getMatch() {
+		ArrayList<Game> result = new ArrayList<Game>();
+		try {
+			ous.writeObject(CommCommands.LISTGAME); 
+			result= (ArrayList<Game>)ois.readObject();
+
+
+		} catch (Exception e) {
+
+		}
+		return result;
+
+	}
+
+
+	@Override
+	public String createMatch(Match match) {
+		try {
+			ous.writeObject(CommCommands.NEWMATCH);
+			ous.writeObject(match);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+
+	}
+	@Override
+	public String addWord(Word word) {
+		try {
+			ous.writeObject(CommCommands.ADDWORD);
+			ous.writeObject(word);
+			String result = (String) ois.readObject();
+			return result;
+
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+
+
+	@Override
+	public int getIscritti(String nome_Partita) {
+		try {
+			ous.writeObject(CommCommands.GETISCRITTI);
+			String parameter = nome_Partita;
+			ous.writeObject(parameter);
+			int result = (int) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return Integer.parseInt("ERRORE " + e.getMessage());
+		}
+	}
+
+
+	@Override
+	public int getRichiesti(String nameGame) {
+		try {
+			ous.writeObject(CommCommands.GETRICHIESTI);
+			String parameter = nameGame;
+			ous.writeObject(parameter);
+			int result = (int) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return Integer.parseInt("ERRORE " + e.getMessage());
+		}
+	}
+
+
+
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<String> getNickMatch(String nome_Partita) {
+		ArrayList<String> res = new ArrayList<String>();
+		try {
+
+			ous.writeObject(CommCommands.GETNICKMATCH);
+			String parameter = nome_Partita;
+			ous.writeObject(parameter);
+			res = (ArrayList<String>) ois.readObject();
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public ArrayList<UserIp> getUser() {
+		ArrayList<UserIp> user = new ArrayList<UserIp>();
+		try {
+			ous.writeObject(CommCommands.GETUSER);
+			user = (ArrayList<UserIp>) ois.readObject();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return user;
+	}
+
+
+
+	@Override
+	public String delete(String email) {
+		try {
+			ous.writeObject(CommCommands.DELETEACCOUNT);
+			String parameter = email;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String checkNameGame(String nameGame) {
+		try {
+			ous.writeObject(CommCommands.CHECKNAMEGAME);
+			String parameter = nameGame;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+	@Override
+	public String getRandomChar(String nameGame) {
+		try {
+			ous.writeObject(CommCommands.GETRANDOMCHAR);
+			String parameter = nameGame;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+	@Override
+	public String checkAvvio(String nameGame) {
+		try {
+			ous.writeObject(CommCommands.CHECKAVVIO);
+			String parameter = nameGame;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String setAbbandono(String nameGame, String nick) {
+		try {
+			ous.writeObject(CommCommands.SETABBANDONO);
+			String[] parameters = {nameGame,nick};
+			ous.writeObject(parameters);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public String deleteGame(String nameGame) {
+		try {
+			ous.writeObject(CommCommands.DELETEGAME);
+			String parameter = nameGame;
+			ous.writeObject(parameter);
+			String result = (String) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+
+	}
+
+
+	@Override
+	public int getScores(String nameGame, String nick, String sessione) {
+		try {
+			ous.writeObject(CommCommands.GETSCORES);
+			String[] parameters = {nameGame,nick,sessione};
+			ous.writeObject(parameters);
+			int result = (int) ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return Integer.parseInt("ERRORE " + e.getMessage());
+		}
+
+	}
+
+	@Override
+	public ArrayList<String> getWord(String nameGame, String nick, String sessione) {
+		ArrayList<String> parolaList = new ArrayList<String>();
+		try {
+
+			ous.writeObject(CommCommands.GETWORD);
+			String[] parameters = {nameGame,nick,sessione};
+			ous.writeObject(parameters);
+			parolaList =  (ArrayList<String>) ois.readObject();
+
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+		return parolaList;
+	}
+}

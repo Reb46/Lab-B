@@ -1,0 +1,97 @@
+/**
+ * 
+ */
+package entitiesip;
+
+import java.io.Serializable;
+
+/**
+ * @author massa
+ *
+ */
+public class Word implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+	private String nameGame;
+	private String nick;
+	private String word;
+	private int session;
+
+
+	public Word(String nameGame,String nick,String word,int session) {
+		this.nameGame = nameGame;
+		this.nick = nick;
+		this.word = word;
+		this.session = session;
+
+	}
+
+
+	/**
+	 * @return the nameGame
+	 */
+	public String getNameGame() {
+		return nameGame;
+	}
+
+
+	/**
+	 * @param nameGame the nameGame to set
+	 */
+	public void setNameGame(String nameGame) {
+		this.nameGame = nameGame;
+	}
+
+
+	/**
+	 * @return the nick
+	 */
+	public String getNick() {
+		return nick;
+	}
+
+
+	/**
+	 * @param nick the nick to set
+	 */
+	public void setNick(String nick) {
+		this.nick = nick;
+	}
+
+
+	/**
+	 * @return the word
+	 */
+	public String getWord() {
+		return word;
+	}
+
+
+	/**
+	 * @param word the word to set
+	 */
+	public void setWord(String word) {
+		this.word = word;
+	}
+
+
+	/**
+	 * @return the session
+	 */
+	public int getSession() {
+		return session;
+	}
+
+
+	/**
+	 * @param session the session to set
+	 */
+	public void setSession(int session) {
+		this.session = session;
+	}
+
+
+	
+
+
+}
