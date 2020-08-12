@@ -34,7 +34,7 @@ public class BoggleGui {
 	private Font font = new Font("Arial",Font.BOLD, 24);
 	boolean flag = true;
 	int sec =0;
-	int min = 1;
+	int min = 2;
 	int punteggio;
 	private JScrollPane scrollWord;
 	Word word;
@@ -53,7 +53,7 @@ public class BoggleGui {
 	
 	private DefaultTableModel model;
 
-	//Arraylist di Arraylist usato come supporto per creare una matrice contente le 16 lettere generate dai 16 dadi
+	//Arraylist usato come supporto per creare una matrice contente le 16 lettere generate dai 16 dadi
 	private ArrayList<String> randomChar = new ArrayList<String>();
 
 	//Arraylist di Arraylist usato come supporto per creare una matrice contente le 16 lettere generate dai 16 dadi
@@ -386,7 +386,7 @@ public class BoggleGui {
 
 				if(sec == 0 && min !=0) {
 
-					sec = 15;
+					sec = 59;
 					min = min-1;
 				}
 

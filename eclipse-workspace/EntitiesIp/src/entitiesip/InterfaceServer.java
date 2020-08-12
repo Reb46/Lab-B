@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 public interface InterfaceServer {
 
-
 	public String registerUser(UserIp userRdF);
 	public String delete(String email);
 	public String login(String email,String password,String type);
