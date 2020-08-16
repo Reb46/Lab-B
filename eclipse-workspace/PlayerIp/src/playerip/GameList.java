@@ -20,6 +20,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.border.BevelBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
@@ -45,7 +48,6 @@ public class GameList {
 	int numeri;
 	Match match;
 	String nick;
-	private JButton btnUpdate;
 	private JTextField textIscritti;
 	ArrayList<String> listNick;
 	private Proxy proxy;
@@ -53,7 +55,7 @@ public class GameList {
 	private JButton btnReturn;
 	ArrayList<Game> lista;
 	ManagementServerDb sb = new ManagementServerDb("jdbc:postgresql://127.0.0.1:5432/dbip","postgres","pbkwsclc");
-
+	Timer timer; // timer per l'aggiornamento della jtable contenente la lista partite
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -192,12 +194,7 @@ public class GameList {
 		lblNick.setBounds(246, 436, 96, 13);
 		frmGameList.getContentPane().add(lblNick);
 
-		btnUpdate = new JButton("AGGIORNA");
-		btnUpdate.setFont(new Font("Century Gothic", Font.BOLD, 11));
-		btnUpdate.setBounds(708, 275, 96, 19);
-		frmGameList.getContentPane().add(btnUpdate);
-
-		showListGame();
+		refresh();
 		click();
 
 
@@ -299,17 +296,19 @@ public class GameList {
 
 				if(result.equals("FAILED") || result1.equals("NOT UPDATE")){
 					JOptionPane.showMessageDialog(frmGameList, "Non sei stato aggiunto alla partita");
+
 				}
 				if(result2.equals("SI INIZIA")) { // se la partita può iniziare inizia il countdown
-
+					timer.cancel();
 					Countdown countdown = new Countdown(proxy,email,textNomePartita.getText());
 					countdown.frmCountDown.setLocationRelativeTo(null);
 					countdown.frmCountDown.setVisible(true);
 					frmGameList.dispose();
 
+					// se la partita non può ancora iniziare e non è stata annullata, si rimane in attesa
 
-				}else if (result2.equals("NON PUO INIZIARE")) { // se la partita non può partire si rimane in attesa
-
+				}else if (result2.equals("NON PUO INIZIARE") && sb.checkDeleteGame(textNomePartita.getText())) { 
+					timer.cancel();
 					PleaseWait pleaseWait = new PleaseWait(proxy, email,textNomePartita.getText());
 					pleaseWait.frmPlease.setLocationRelativeTo(null);
 					pleaseWait.frmPlease.setVisible(true);
@@ -326,7 +325,7 @@ public class GameList {
 								// se la partita ancora non può iniziare e non è stata cancellata, si rimane in attesa
 								while (!sb.checkStart(textNomePartita.getText()) && sb.checkPlayerMatch(textNomePartita.getText(),nick)){ 
 
-									System.out.println("la partita non può essere avviata gamelist----- " + nick);
+								
 									try {
 										Thread.sleep(1000); // controllo avviene ogni secondo
 									} catch (InterruptedException e) {
@@ -336,7 +335,7 @@ public class GameList {
 
 									// se la partita può iniziare, parte il timer di 30 secondi per tutti i player
 									if(sb.checkStart(textNomePartita.getText())) { 
-
+										timer.cancel();
 										flag = false;
 										Countdown countdown = new Countdown(proxy,email,textNomePartita.getText());
 										countdown.frmCountDown.setLocationRelativeTo(null);
@@ -346,6 +345,7 @@ public class GameList {
 
 										// se un giocatore abbandona il match, il thread di controllo viene interrotto
 									}else if(!sb.checkPlayerMatch(textNomePartita.getText(), nick)) {
+
 										flag = false;
 
 										System.out.println("thread gamelist chiuso " + nick);
@@ -368,11 +368,11 @@ public class GameList {
 
 			}
 		});
-
 		btnReturn.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				timer.cancel();
 				MainMenuPlayer mainMenuPlayer =  new MainMenuPlayer(proxy, email);
 				mainMenuPlayer.frame.setLocationRelativeTo(null);
 				mainMenuPlayer.frame.setVisible(true);
@@ -380,41 +380,9 @@ public class GameList {
 
 			}
 		});
-
-		// aggiorna la jtable
-		btnUpdate.addActionListener(new ActionListener() {
-
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				refresh();
-			}
-		});
 	}
 
-	// setta i campi della jtable
-	public void showListGame() {
 
-
-		lista = proxy.getMatch();
-
-		model = (DefaultTableModel)table.getModel();
-
-		for(int i=0;i<lista.size();i++) {
-			numeri = proxy.getIscritti(lista.get(i).getName());// numero degli iscritti
-			listNick = proxy.getNickMatch(lista.get(i).getName());// listanick degli iscritti alla i-esima partita
-
-			row[0] = lista.get(i).getName();
-			row[1] = lista.get(i).getDate();
-			row[2] = lista.get(i).getHour();
-			row[3] = lista.get(i).getNumberPlayer();
-			row[4] = numeri;
-			row[5] = listNick;
-			model.addRow(row);
-
-
-		}
-
-	}
 
 	// i campi della jtable vengono settati sulle jtextfield
 	public void click() {
@@ -450,17 +418,41 @@ public class GameList {
 
 	}
 
+	// restituisce il nome della partita
 	public String getNamePartita() {
 		return textNomePartita.getText();
 	}
 
 
-	//aggiorna la lista utenti
+	//aggiorna ogni 3 secondi la jtable contenente la lista delle partita
 	private void refresh() {
+		timer = new Timer();
+		timer.scheduleAtFixedRate(new TimerTask() {
 
-		model = (DefaultTableModel)table.getModel();
-		model.setRowCount(0);
-		showListGame();
+			@Override
+			public void run() {
+				lista = proxy.getMatch();
+
+				DefaultTableModel model = (DefaultTableModel)table.getModel();
+				model.setRowCount(0);
+
+				for(int i=0;i<lista.size();i++) {
+					numeri = proxy.getIscritti(lista.get(i).getName());// numero degli iscritti
+					listNick = proxy.getNickMatch(lista.get(i).getName());// listanick degli iscritti alla i-esima partita
+
+					row[0] = lista.get(i).getName();
+					row[1] = lista.get(i).getDate();
+					row[2] = lista.get(i).getHour();
+					row[3] = lista.get(i).getNumberPlayer();
+					row[4] = numeri;
+					row[5] = listNick;
+					model.addRow(row);
+				}
+			}
+		}, 100, 3000); // Pianifica l'attività specificata per l'esecuzione ripetuta a partire dal ritardo specificato.
 
 	}
+
+
+
 }

@@ -556,4 +556,40 @@ public class Proxy implements InterfaceServer {
 		}
 		return parolaList;
 	}
+
+
+	@Override
+	public String getHost() {
+		try {
+			ous.writeObject(CommCommands.GETSHOST);	
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+
+	@Override
+	public String userPostGres() {
+		try {
+			ous.writeObject(CommCommands.GETUSERPOSTGRES);	
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
+	@Override
+	public String passwPostGres() {
+		try {
+			ous.writeObject(CommCommands.GETPASSWPOSTGRES);	
+			String result = (String)ois.readObject();
+			return result;
+		} catch (Exception e) {
+			return "Errore " + e.getMessage();
+		}
+	}
+
 }

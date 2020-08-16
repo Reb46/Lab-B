@@ -8,16 +8,24 @@ import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
 import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
+
+import entitiesip.PostgresData;
 import entitiesip.Validator;
 
 
 public class ServerIp {
+
+
+
 	@SuppressWarnings("unused")
 	public static void main(String[] args) throws IOException,ClassNotFoundException, SQLException, NoSuchAlgorithmException, SendFailedException, MessagingException {
 
 		String type = "admin";
 		String uid = "";
 		String password = "";
+		String hostPostgreSQL = "";
+		String userPostgreSQL = "";
+		String passwPostgreSQL = "";
 		Validator validator = new Validator();
 		String pw = validator.sha1(password);
 		int portNumber = 8080;
@@ -25,18 +33,27 @@ public class ServerIp {
 		ServerSocket server = new ServerSocket(portNumber);
 		System.out.println("Porta " + portNumber);
 		BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
-		CreateDb db = new CreateDb();
+
 		boolean adminNotExist;
+		
 		try {
+
 			System.out.println("Digitare host Database PostgreSQL");
-			String hostPostgreSQL = in.readLine();
+			hostPostgreSQL = in.readLine();
 			System.out.println("Digitare user Database PostgreSQL");
-			String userPostgreSQL = in.readLine();
+			userPostgreSQL = in.readLine();
 			System.out.println("Digitare password Database PostgreSQL");
-			String passwPostgreSQL = in.readLine();
+			passwPostgreSQL = in.readLine();
+
+			CreateDb createDb = new CreateDb(userPostgreSQL,passwPostgreSQL);
+
 
 			ManagementServerDb ms = new ManagementServerDb(hostPostgreSQL, userPostgreSQL, passwPostgreSQL);
-			
+
+			PostgresData postgresData = new PostgresData(hostPostgreSQL, userPostgreSQL, passwPostgreSQL);
+			if(!ms.getHost().equals(hostPostgreSQL)) {
+			ms.registerPostgresData(hostPostgreSQL, userPostgreSQL, passwPostgreSQL);
+			}
 			// se non esiste un utente con privilegi admin, ne chiede la creazione, altrimenti verrà richiesto il login dell'admin
 			if(!ms.checkAdmin(type)) { 
 				adminNotExist = false;
@@ -107,6 +124,10 @@ public class ServerIp {
 
 		}
 
-
 	}
+
 }
+
+
+
+

@@ -24,14 +24,14 @@ import entitiesip.Game;
  *
  */
 
-
 public class ManagementServerDb implements InterfaceServer{
 	private Validator validator = new Validator();
 	private Connection conn; 
 	private PreparedStatement stmt;
-
-
+	
 	public ManagementServerDb (String host,String user,String passw){
+		
+		
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -49,7 +49,9 @@ public class ManagementServerDb implements InterfaceServer{
 		try {
 
 			conn = DriverManager.getConnection(host,user,passw);
+
 		}
+
 		catch (SQLException e)
 		{
 
@@ -66,7 +68,11 @@ public class ManagementServerDb implements InterfaceServer{
 			System.err.println("Impossibile connettersi al database. Controlla i dati inseriti.\nRiavvia il server");
 			System.exit(1);
 		}
+
+
 		try {
+
+
 			System.out.println("Creazione tabella amministratore..."); 
 			stmt = conn.prepareStatement("CREATE TABLE amministratore " +
 					"(uid character varying(25) not null, " +
@@ -78,12 +84,12 @@ public class ManagementServerDb implements InterfaceServer{
 			stmt.executeUpdate();
 
 
-			System.out.println("Tabella utente amministratore perfettamente");
+			System.out.println("Tabella amministratore creata perfettamente");
 			System.out.println();
 		} catch (Exception e) {
 
 
-			System.out.println("Tabella amministratore creata in precedenza");
+			System.out.println("Tabella amministratore gia presente");
 			System.out.println();
 		}
 		try {
@@ -107,7 +113,7 @@ public class ManagementServerDb implements InterfaceServer{
 			System.out.println();
 		} catch (Exception e) {
 
-			System.out.println("Tabella utente creata in precedenza");
+			System.out.println("Tabella utente gia presente");
 			System.out.println();
 		}
 		try {
@@ -130,7 +136,7 @@ public class ManagementServerDb implements InterfaceServer{
 
 		} catch (Exception e) {
 
-			System.out.println("Tabella partita creata in precedenza");
+			System.out.println("Tabella partita gia presente");
 			System.out.println();
 		}
 		try {
@@ -149,7 +155,7 @@ public class ManagementServerDb implements InterfaceServer{
 
 		} catch (Exception e) {
 
-			System.out.println("Tabella match creata in precedenza");
+			System.out.println("Tabella match gia presente");
 			System.out.println();
 		}
 
@@ -169,14 +175,25 @@ public class ManagementServerDb implements InterfaceServer{
 
 		} catch (Exception e) {
 
-			System.out.println("Tabella parola creata in precedenza");
+			System.out.println("Tabella parola gia presente");
 			System.out.println();
 		}
+		try {
+			System.out.println("Creazione tabella postgresdata...");
+			stmt = conn.prepareStatement("CREATE TABLE postgresdata " +
+					"(host VARCHAR(38) primary key  not null ," + 
+					"userpostgres VARCHAR(25) NOT NULL," +
+					"pw character varying not null)");			
 
+			stmt.executeUpdate();
+			System.out.println("Tabella postgresdata creata perfettamente");
+			System.out.println();
 
+		} catch (Exception e) {
 
-
-
+			System.out.println("Tabella postgresdata gia presente");
+			System.out.println();
+		}
 	}
 
 	/**
@@ -200,6 +217,8 @@ public class ManagementServerDb implements InterfaceServer{
 			ps.setString(7, c);
 			ps.executeUpdate();
 			return "REGISTER OK";
+
+
 
 		} catch (SQLException e) {
 
@@ -294,7 +313,7 @@ public class ManagementServerDb implements InterfaceServer{
 			return "CREATE";
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.out.println("parita eliminata");
 		}
 		return "FAILED";
 
@@ -346,6 +365,25 @@ public class ManagementServerDb implements InterfaceServer{
 			e.printStackTrace();
 		}
 	}
+
+	public synchronized void registerPostgresData(String host,String user,String pw)  {
+
+		PreparedStatement ps=null;
+		try {
+			ps = conn.prepareStatement("INSERT INTO postgresdata(host,userpostgres,pw) VALUES(?,?,?)");
+			ps.setString(1, host);
+			ps.setString(2, user);
+			ps.setString(3,pw);
+			ps.executeUpdate();
+
+		}catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+
+
 
 	/**
 	 * Elimina dal database l'utente che non ha eseguito l'attivazione del proprio profilo
@@ -722,25 +760,26 @@ public class ManagementServerDb implements InterfaceServer{
 	}
 
 	/**
-	 * Se un utente abbandona la partita prima del suo inzio 
+	 * Controlla che un giocatore o l'unico iscritto in quel momento non abbandoni la partita prima della chiusura delle iscrizioni.
 	 * @param nameGame,nick
 	 * @return String ANNULLATA LISTA VUOTA O UTENTE ELIMINATO
 	 */
 	@Override
 	public synchronized String setAbbandono(String nameGame, String nick) {
+
 		int richiesti = getRichiesti(nameGame);
 		int iscritti = getIscritti(nameGame);
 
 		try {
 
-			if(iscritti < richiesti & iscritti==1) { // se l'abbandono avviene prima della chiusura delle iscrizioni, e l'iscritto è solo lui la partita viene cancellata
+			if(iscritti < richiesti & iscritti==1) { // se l'abbandono avviene prima della chiusura delle iscrizioni, e l'iscritto in quell'istante è solo lui la partita viene cancellata
 				PreparedStatement ps = this.conn.prepareStatement("delete from match where nome_partita = '"+nameGame+ "' and nick = '"+nick+"'");
 				ps.executeUpdate();
 				ps = this.conn.prepareStatement("delete from partita where nome = '"+nameGame+"'");
 				ps.executeUpdate();
 				return "ANNULLATA LISTA VUOTA";
 
-			}else if (iscritti < richiesti && iscritti >1) {
+			}else if (iscritti < richiesti && iscritti >1) { // altrimenti viene eliminato solo il giocatore che ha annullato la partita
 				PreparedStatement ps = this.conn.prepareStatement("delete from match where nome_partita = '"+nameGame+ "' and nick = '"+nick+"'");
 				ps.executeUpdate();
 				return "UTENTE ELIMINATO";
@@ -1139,7 +1178,7 @@ public class ManagementServerDb implements InterfaceServer{
 
 
 
-	/** Controlla che la partita abbia raggiunto il numero di player richiesti, settando il valore true al campo avviare
+	/** Controlla che la partita abbia raggiunto il numero di player richiesti
 	 * @param nameGame
 	 * @return true o false
 	 */
@@ -1265,6 +1304,75 @@ public class ManagementServerDb implements InterfaceServer{
 		return parolaList;
 	}
 
+
+	/**
+	 * Restituisce host del db postgres
+	 * @return listPostgresData
+	 */
+
+	public synchronized String getHost() {
+		String host = "";
+		
+		try {
+
+			PreparedStatement ps = this.conn.prepareStatement("select host from postgresdata");
+			ResultSet resultSet = ps.executeQuery();
+			while (resultSet.next()) {
+				host= resultSet.getString("host");
+			}
+			return host;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+
+	}
+
+	/**
+	 * Restituisce host del db postgres
+	 * @return listPostgresData
+	 */
+
+	public synchronized String userPostGres() {
+		String host = "";
+		try {
+
+			PreparedStatement ps = this.conn.prepareStatement("select userpostgres from postgresdata");
+			ResultSet resultSet = ps.executeQuery();
+			while (resultSet.next()) {
+				host= resultSet.getString("userpostgres");
+			}
+			return host;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+
+	}
+
+	/**
+	 * Restituisce host del db postgres
+	 * @return listPostgresData
+	 */
+
+	public synchronized String passwPostGres() {
+		String host = "";
+		try {
+
+			PreparedStatement ps = this.conn.prepareStatement("select pw from postgresdata");
+			ResultSet resultSet = ps.executeQuery();
+			while (resultSet.next()) {
+				host= resultSet.getString("pw");
+			}
+			return host;
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
+
+	}
 
 
 }

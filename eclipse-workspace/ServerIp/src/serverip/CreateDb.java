@@ -1,20 +1,19 @@
 package serverip;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+
 public class CreateDb {
-
-	// classe che crea solo il database ip se non presente in fase di avvio del server.
-	//se presente visualizza un msg di notifica
-
+	
 	private Connection connection;
 	private PreparedStatement ps;
-	private String host = "jdbc:postgresql://127.0.0.1:5432/"; // host di postgres lasciare così.. solo dopo aggiung /dbip
-	private String user = "postgres";
-	private String pw = "pbkwsclc";
+	private final String host = "jdbc:postgresql://127.0.0.1:5432/";
 
-	public CreateDb(){
+
+	public CreateDb(String user,String pw){
+		
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -25,7 +24,7 @@ public class CreateDb {
 			System.exit(1);
 
 		}
-		
+		System.out.println("PostgreSQL JDBC driver 42.2.9 registrato correttamente");
 		connection = null;
 
 		//inizializzo l'oggetto connection
@@ -40,7 +39,7 @@ public class CreateDb {
 		}
 		if (connection != null) 
 		{ 
-			System.out.println("Connessione al database stabilita.");
+			System.out.println("Connessione al database creata correttamente.");
 
 
 			try {
@@ -60,5 +59,8 @@ public class CreateDb {
 			System.out.println("Impossibile connettersi al database.\nRiavvia il server");
 			System.exit(1);
 		}
+
 	}
+
+
 }

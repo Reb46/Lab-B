@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
-		<item key="selection" value="nick"/>
+		<item key="selection" value="refresh"/>
 		<item key="wrap" value="true"/>
 		<item key="casesensitive" value="false"/>
 		<item key="wholeword" value="false"/>
 		<item key="incremental" value="false"/>
 		<item key="isRegEx" value="false"/>
 		<list key="findhistory">
+			<item value="refresh"/>
+			<item value="result"/>
+			<item value="playermatch"/>
 			<item value="nick"/>
+			<item value="checkplayer"/>
+			<item value="checkstart"/>
+			<item value="checkdel"/>
+			<item value="sb"/>
 			<item value="addword"/>
 			<item value="add"/>
 			<item value="show"/>
@@ -16,13 +23,6 @@
 			<item value="getmatch"/>
 			<item value="frame"/>
 			<item value="delete"/>
-			<item value="frmNewGame"/>
-			<item value="iscritti"/>
-			<item value="update"/>
-			<item value="create"/>
-			<item value="true"/>
-			<item value="boole"/>
-			<item value="listnick"/>
 		</list>
 		<list key="replacehistory">
 			<item value="frmGameList"/>

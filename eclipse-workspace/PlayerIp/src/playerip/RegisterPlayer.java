@@ -23,7 +23,6 @@ import javax.swing.JButton;
 import javax.swing.JPasswordField;
 import clientip.Proxy;
 import entitiesip.UserIp;
-//import serverrdf.SendingEmail;
 import serverip.ThreadCheckActivation;
 import javax.swing.border.BevelBorder;
 
@@ -58,6 +57,7 @@ public class RegisterPlayer {
 	private JLabel lblType;
 	private JTextField textType;
 	private String type = "user";
+	
 	/**
 	 * Launch the application.
 	 */
@@ -385,7 +385,7 @@ public class RegisterPlayer {
 			@SuppressWarnings("deprecation")
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				
 				if(isOKSurname == false || isOKname == false || isOKnick == false || isOKemail == false || isOKpassw == false || isOKconfirm == false) {
 					JOptionPane.showMessageDialog(frame,"NESSUN CAMPO VUOTO","Errore",JOptionPane.ERROR_MESSAGE);
 					return;
@@ -395,7 +395,7 @@ public class RegisterPlayer {
 					userIp = new UserIp(textSurname.getText(), textName.getText(), textNick.getText(), textEmail.getText(), passwordField.getText(), type);
 					String result = proxy.registerUser(userIp);
 					if(result.equals("REGISTER OK"))
-						new ThreadCheckActivation(textNick.getText());
+					new	ThreadCheckActivation(textNick.getText());
 					JOptionPane.showMessageDialog(frame, "Registrazione avvenuta con successo\n Controlla la tua mail e inserisci il codice di attivazione");
 
 					setFieldsFalse();

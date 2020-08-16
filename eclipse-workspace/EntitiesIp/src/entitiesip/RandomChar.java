@@ -1,110 +1,87 @@
 package entitiesip;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
 
-/**
- * @author massa
- *
- */
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
 
 // questa classe si occupa della generazione delle 16 lettere casuali del paroliere 
 
 
 
 public class RandomChar {
-	private String numeri = ""; // variabile usata per memorizzare il numero corrispondente al dado
 
-	private String lettere = ""; // varaibile usata per memorizzare le lettere di ogni dado
+	List<String> facceDadi = new ArrayList<String>(); // arraylist contenente i 16 dadi con le rispettive facce
 
-	private int index; // uso la variabile index di tipo int per salvare il valore casuale compreso tra 0 e la lunghezza della stringa(6 nel nostro caso)
+	String[] arrayDadi; // array che andrà a contenere i 16 dadi con le rispettive facce
 
-	private Random random = new Random();
+	String[] sediciLettere = new String[16]; // array che andrà a contenere le 16 lettere finali generate casualmente
 
-	private String letteraDado= ""; //variabile usata per memorizzare le lettere del dado
+	int index; // uso la variabile index di tipo int per salvare il valore casuale compreso tra 0 e  la lunghezza della stringa (la faccia di ogni dado)
 
-	private String stringaLettere = ""; // variabile usata per memorizzare le 16 lettere random 
+	Random random = new Random();// Un'istanza di questa classe viene utilizzata per generare un flusso di numeri casuali.
 
-	private StringBuffer sb = new StringBuffer();
 
-	//Hashmap dei 16 dadi. Il numero del dado corrisponde alla chiave; le 6 facce del dado al valore
-	private HashMap<Integer,String> dadi = new HashMap<Integer,String>();
+	String letteraDado; // variabile utilizzata per memorizzare la singola lettera scelta casualmente tra ognunna delle 6 facce dei 16 dadi
 
-	// Arraylist contenente il numero del dado con tutte le rispettive lettere 
-	private ArrayList<String> listaCompleta = new ArrayList<String>();
+	StringBuilder sb = new StringBuilder();
 
-	// Arraylist contente le lettere casuali generate dai dadi
-	ArrayList<String> lettereCasuali = new  ArrayList<String>(); 
+	String stringaFinale; // variabile contenente le 16 lettere 
 
-	// Arraylist contente il numero del dado che ha generato la corrispettiva lettera
-	ArrayList<String> numeriDadi = new  ArrayList<String>(); 
 
 	public RandomChar() {
-
 	}
 
+	/**
+	 * Metodo che ritorna una stringa contenente le 16 lettere generate casualmente
+	 * @return stringaFinale
+	 */
 	public String setChar(){
 
-		dadi.put(1,"BAOOQM");
-		dadi.put(2,"UTESLP");
-		dadi.put(3,"IGENVT");
-		dadi.put(4,"OULIER");
-		dadi.put(5,"ACESLR");
-		dadi.put(6,"RATIBL");
-		dadi.put(7,"SMIROA");
-		dadi.put(8,"ISEEFH");
-		dadi.put(9,"SOTEND");
-		dadi.put(10,"AICOFR");
-		dadi.put(11,"VNZDAE");
-		dadi.put(12,"IEATAO");
-		dadi.put(13,"OTUCEN");
-		dadi.put(14,"NOLGUE");
-		dadi.put(15,"DCMPAE");
-		dadi.put(16,"ERINSH");
+		facceDadi.add("BAOOQM");
+		facceDadi.add("UTESLP");
+		facceDadi.add("IGENVT");
+		facceDadi.add("OULIER");
+		facceDadi.add("ACESLR");
+		facceDadi.add("RATIBL");
+		facceDadi.add("SMIROA");
+		facceDadi.add("ISEEFH");
+		facceDadi.add("SOTEND");
+		facceDadi.add("AICOFR");
+		facceDadi.add("VNZDAE");
+		facceDadi.add("IEATAO");
+		facceDadi.add("OTUCEN");
+		facceDadi.add("NOLGUE");
+		facceDadi.add("DCMPAE");
+		facceDadi.add("ERINSH");
 
-		// Map.Entry permette di stampare la coppia (chiave-valore) attaverso i metodi getKey e getValue.
-		// tutte le coppie presenti verranno aggiunte all'arraylist 'completi'
-		for(Map.Entry<Integer, String> entry: dadi.entrySet()) {
-			listaCompleta.add(entry.getKey() +"," + entry.getValue());
+		// converto l'arraylist "faccedadi" in un array(paroliere) contenente i 16 dadi con le rispettive facce
+		arrayDadi = facceDadi.toArray(new String[facceDadi.size()]); 
 
-		} 
-
-		// tramite il metodo statico shuffle, della classe Collections, permuto in modo casuale la lista(listaCompleta) passata come parametro
-		Collections.shuffle(listaCompleta); 
+		// con il metodo statico shuffle, permuto in modo casuale l'array paroliere passato come parametro
+		Collections.shuffle(Arrays.asList(arrayDadi)); 
 
 
-		//scorro tutti gli elementi dell'arraylist
+		for(int i=0;i<arrayDadi.length;i++) {
 
-		for(int i=0; i<listaCompleta.size();i++) {
+			// uso la variabile index di tipo int per salvare il valore casuale compreso tra 0 e la lunghezza della i-esima faccia del dado
+			//(ogni faccia di un dado è una stringa)
+			index = random.nextInt(arrayDadi[i].length());
 
-			// divido ogni stringa presente nell'array tramite il metodo split della classe String.
-			// la parte numerica e quella letterale vengono salvate in due variali distinte di tipo string
+			// memorizzo la lettera scelta casualmente dalla i-esima faccia/stringa. index rapprenta la posizione casuale salvata nell'istruzione precedente
+			letteraDado = Character.toString(arrayDadi[i].charAt(index));
 
-			String[] split = listaCompleta.get(i).split(","); 
-			numeri = split[0]; // numeri de dadi
-			lettere = split[1]; // le lettere dei dadi
-
-			// uso la variabile index di tipo int per salvare il valore casuale compreso tra 0 e la lunghezza della stringa(6 nel nostro caso)
-
-			index = random.nextInt(lettere.length());
-
-			// memorizzo la lettera del dado. index rapprenta la posizione della lettera passata come parametro
-			letteraDado = Character.toString(lettere.charAt(index));
-
-			// ogni numero dei 16 dadi viene aggiunto all'arraylist
-			numeriDadi.add(numeri);
-
-			// ogni lettera casuale dei 16 dadi viene aggiunta all'arraylist
-			lettereCasuali.add(letteraDado);
-
+			// array contenente le 16 lettere finali utili per lo scacchiere del gioco
+			sediciLettere[i] = letteraDado;
 		}
 
-		for(String x:lettereCasuali)
-			sb.append(x);
-		stringaLettere =sb.toString();
-		return stringaLettere;
+
+		// ognuna delle sedici lettere scelte casualmente vengono aggiunte alla variabile stringaFinale
+		for(String x:sediciLettere)
+			sb.append(x); 
+		stringaFinale =sb.toString();
+		return stringaFinale;
 	}
 
 

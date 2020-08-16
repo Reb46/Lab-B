@@ -38,7 +38,6 @@ public class Skeleton extends Thread {
 		System.out.println("Skeleton: " + socket + " in esecuzione");
 		CommCommands cc = null;
 		String[] parameters = null;
-
 		String returnValue;
 
 		do {
@@ -85,8 +84,8 @@ public class Skeleton extends Thread {
 
 				case CHECKNICK:
 					System.out.println("Prendo in carico il check sul nickName....");
-					String nickName = (String)ois.readObject();
-					returnValue = msdb.checkNick(nickName);
+					String nick = (String)ois.readObject();
+					returnValue = msdb.checkNick(nick);
 					oos.writeObject(returnValue);
 					break;
 
@@ -134,22 +133,22 @@ public class Skeleton extends Thread {
 
 				case GETISCRITTI:
 					System.out.println("Prendo in carico il getIscritti....");
-					String nome_Partita = (String) ois.readObject();
-					int value = msdb.getIscritti(nome_Partita);
+					String nomePartita = (String) ois.readObject();
+					int value = msdb.getIscritti(nomePartita);
 					oos.writeObject(value);
 					break;
 
 				case GETRICHIESTI:
 					System.out.println("Prendo in carico il getRichiesti....");
-					String name_Game = (String) ois.readObject();
-					int number = msdb.getRichiesti(name_Game);
+					String nome_Partita = (String) ois.readObject();
+					int number = msdb.getRichiesti(nome_Partita);
 					oos.writeObject(number);
 					break;
 
 				case GETNICKMATCH:
 					System.out.println("Prendo in carico il getNickMatch....");
-					String nomePartita = (String) ois.readObject();
-					ArrayList<String > lista = msdb.getNickMatch(nomePartita);
+					String nomePartita_1 = (String) ois.readObject();
+					ArrayList<String > lista = msdb.getNickMatch(nomePartita_1);
 					oos.writeObject(lista);
 					break;
 
@@ -176,8 +175,8 @@ public class Skeleton extends Thread {
 
 				case CHECKAVVIO:
 					System.out.println("Prendo in carico il checkAvvio ....");
-					String nomePart = (String) ois.readObject();
-					returnValue = msdb.checkAvvio(nomePart);
+					String nomePartita_2 = (String) ois.readObject();
+					returnValue = msdb.checkAvvio(nomePartita_2);
 					oos.writeObject(returnValue);
 					break;
 
@@ -189,8 +188,8 @@ public class Skeleton extends Thread {
 					break;
 				case CHECKNAMEGAME:
 					System.out.println("Prendo in carico il check sul nome scelto per la partita....");
-					String nameGame = (String) ois.readObject();
-					returnValue = msdb.checkNameGame(nameGame);
+					String nomePartita_3 = (String) ois.readObject();
+					returnValue = msdb.checkNameGame(nomePartita_3);
 					oos.writeObject(returnValue);
 					break;
 
@@ -237,8 +236,8 @@ public class Skeleton extends Thread {
 
 				case UPDATEISCRITTI:
 					System.out.println("Prendo in carico l'update degli iscritti....");
-					String nomeGame = (String) ois.readObject();
-					returnValue = msdb.updateIscritti(nomeGame);
+					String nomePartita_4 = (String) ois.readObject();
+					returnValue = msdb.updateIscritti(nomePartita_4);
 					oos.writeObject(returnValue);
 					break;
 
@@ -257,8 +256,8 @@ public class Skeleton extends Thread {
 
 				case GETRANDOMCHAR:
 					System.out.println("Prendo in carico il randomChar....");
-					String nome = (String) ois.readObject();
-					returnValue = msdb.getRandomChar(nome);
+					String nomePartita_5 = (String) ois.readObject();
+					returnValue = msdb.getRandomChar(nomePartita_5);
 					oos.writeObject(returnValue);
 					break;
 
@@ -271,8 +270,8 @@ public class Skeleton extends Thread {
 
 				case DELETEGAME:
 					System.out.println("Prendo in carico il deleteGame...");
-					String nomePartita_ = (String) ois.readObject();
-					returnValue = msdb.deleteGame(nomePartita_);
+					String nomePartita_6 = (String) ois.readObject();
+					returnValue = msdb.deleteGame(nomePartita_6);
 					oos.writeObject(returnValue);
 					break;
 
@@ -289,7 +288,21 @@ public class Skeleton extends Thread {
 					ArrayList<String> parolaList =	 msdb.getWord(parameters[0], parameters[1], sessione);
 					oos.writeObject(parolaList);
 					break;
-					
+				case GETSHOST:
+					System.out.println("Prendo in carico il getHost ...");
+					returnValue = msdb.getHost();
+					oos.writeObject(returnValue);
+					break;
+				case GETUSERPOSTGRES:
+					System.out.println("Prendo in carico il getuserPostGres ...");
+					returnValue = msdb.userPostGres();
+					oos.writeObject(returnValue);
+					break;
+				case GETPASSWPOSTGRES:
+					System.out.println("Prendo in carico il getPassqPostGres ...");
+					returnValue = msdb.passwPostGres();
+					oos.writeObject(returnValue);
+					break;
 				default:
 					break;
 				}

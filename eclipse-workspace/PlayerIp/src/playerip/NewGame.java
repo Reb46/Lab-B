@@ -23,11 +23,12 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import clientip.Proxy;
-import serverip.ManagementServerDb;
 import entitiesip.Game;
 import entitiesip.Match;
 import entitiesip.RandomChar;
 import entitiesip.Validator;
+import serverip.ManagementServerDb;
+
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.border.BevelBorder;
@@ -47,9 +48,9 @@ public class NewGame {
 	boolean checkName;
 	int number=2; // numero min giocatori
 	String nick = "";
-
-	private RandomChar randomChar = new RandomChar();
 	ManagementServerDb sb = new ManagementServerDb("jdbc:postgresql://127.0.0.1:5432/dbip","postgres","pbkwsclc");
+	private RandomChar randomChar = new RandomChar();
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -168,8 +169,6 @@ public class NewGame {
 		btnReturn.setFont(new Font("Tahoma", Font.BOLD, 9));
 		btnReturn.setBounds(238, 244, 96, 19);
 		frmNewGame.getContentPane().add(btnReturn);
-
-
 		textNameGame.addKeyListener(new KeyAdapter() {
 
 			@Override

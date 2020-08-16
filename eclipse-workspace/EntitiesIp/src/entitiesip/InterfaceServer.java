@@ -42,7 +42,11 @@ public interface InterfaceServer {
 	public int getScores(String nameGame,String nick, String sessione);
 	public String addWord(Word word);
 	public ArrayList<String> getWord(String nameGame,String nick, int sessione);
-
+	public String getHost();
+	public String userPostGres();
+	public String passwPostGres();
+	
+	
 }
 
 
