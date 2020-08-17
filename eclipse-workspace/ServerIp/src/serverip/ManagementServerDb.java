@@ -28,10 +28,10 @@ public class ManagementServerDb implements InterfaceServer{
 	private Validator validator = new Validator();
 	private Connection conn; 
 	private PreparedStatement stmt;
-	
+
 	public ManagementServerDb (String host,String user,String passw){
-		
-		
+
+
 		try {
 
 			Class.forName("org.postgresql.Driver");
@@ -267,7 +267,9 @@ public class ManagementServerDb implements InterfaceServer{
 
 
 	/**
-	 * Inserisce le parole trovate dai giocatori nel db
+	 * Le parole individuate dai giocatori vengono salvate nella table parola nel db
+	 * @param Word word
+	 * @return aggiunta o non aggiunta
 	 */
 	@Override
 	public String addWord(Word word) {
@@ -1263,7 +1265,7 @@ public class ManagementServerDb implements InterfaceServer{
 	 * @return punteggio
 	 */
 	@Override
-	public synchronized int getScores(String nameGame, String nick, String sessione) {
+	public synchronized int getScores(String nameGame, String nick, int sessione) {
 		int punteggio = 0;
 		try {
 			PreparedStatement ps = this.conn.prepareStatement("select punteggio from match where nome_partita = '"+nameGame+"' and nick = '"+nick+"' and sessione = '"+sessione+"'");
@@ -1280,7 +1282,7 @@ public class ManagementServerDb implements InterfaceServer{
 	}
 
 	/**
-	 * Restituisce l'arraylist contente le parole individuate dal giocatote nella partita/sessione di gioco
+	 * Restituisce l'arraylist contenente le parole individuate dal giocatote nella partita/sessione di gioco
 	 * @param nameGame,nick,sessione
 	 * @return parolaList
 	 */
@@ -1312,7 +1314,7 @@ public class ManagementServerDb implements InterfaceServer{
 
 	public synchronized String getHost() {
 		String host = "";
-		
+
 		try {
 
 			PreparedStatement ps = this.conn.prepareStatement("select host from postgresdata");

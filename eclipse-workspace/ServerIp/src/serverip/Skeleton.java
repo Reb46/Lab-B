@@ -278,7 +278,8 @@ public class Skeleton extends Thread {
 				case GETSCORES:
 					System.out.println("Prendo in carico il getscores...");
 					parameters = (String[]) ois.readObject();
-					int punteggio = msdb.getScores(parameters[0], parameters[1], parameters[2]);
+					int session = (int) ois.readObject();
+					int punteggio = msdb.getScores(parameters[0], parameters[1],session);
 					oos.writeObject(punteggio);
 					break;
 				case GETWORD:

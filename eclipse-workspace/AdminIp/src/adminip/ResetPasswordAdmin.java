@@ -15,15 +15,20 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 
 public class ResetPasswordAdmin {
-
+	//elementi gui
 	private JFrame frame;
 	private JTextField textEmail;
+	private JPanel panel;
+	private JLabel lblTitle;
+	private JLabel lblEmail;
+	private JLabel lblInfo;
+	private JButton btnSendAdmin;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					
+
 					Proxy proxy = new Proxy();
 					ResetPasswordAdmin window = new ResetPasswordAdmin(proxy);
 					window.frame.setLocationRelativeTo(null);
@@ -35,31 +40,31 @@ public class ResetPasswordAdmin {
 		});
 	}
 
-	
+
 	public ResetPasswordAdmin(Proxy proxy) {
 
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 263);
+		frame.setBounds(100, 100, 493, 263);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 		frame.setResizable(false);
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		panel.setBackground(Color.GRAY);
-		panel.setBounds(0, 0, 446, 48);
+		panel.setBounds(0, 0, 488, 48);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("RESET PASSWORD ADMIN");
-		lblNewLabel.setFont(new Font("Tahoma", Font.PLAIN, 26));
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setBounds(40, 10, 364, 28);
-		panel.add(lblNewLabel);
+		lblTitle = new JLabel("RESET PASSWORD ADMIN");
+		lblTitle.setFont(new Font("Tahoma", Font.BOLD, 28));
+		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitle.setForeground(Color.WHITE);
+		lblTitle.setBounds(40, 10, 396, 28);
+		panel.add(lblTitle);
 
-		JLabel lblEmailRpa = new JLabel("EMAIL");
-		lblEmailRpa.setFont(new Font("Century Gothic", Font.BOLD, 13));
-		lblEmailRpa.setBounds(60, 79, 85, 13);
-		frame.getContentPane().add(lblEmailRpa);
+		lblEmail = new JLabel("EMAIL");
+		lblEmail.setFont(new Font("Century Gothic", Font.BOLD, 13));
+		lblEmail.setBounds(60, 79, 85, 13);
+		frame.getContentPane().add(lblEmail);
 
 		textEmail = new JTextField();
 		textEmail.setFont(new Font("Century Gothic", Font.PLAIN, 12));
@@ -67,24 +72,25 @@ public class ResetPasswordAdmin {
 		frame.getContentPane().add(textEmail);
 		textEmail.setColumns(10);
 
-		JLabel lblInfo = new JLabel("<html>Inserisci la mail utilizzata per la registrazione. " +
+		lblInfo = new JLabel("<html>Inserisci la mail utilizzata per la registrazione. " +
 				"Ricevereai una nuova password</html>");
 		lblInfo.setFont(new Font("Century Gothic", Font.PLAIN, 12));
 		lblInfo.setBounds(90, 168, 300, 34);
 		frame.getContentPane().add(lblInfo);
 
-		JButton btnSendAdmin = new JButton("INVIA");
+		btnSendAdmin = new JButton("INVIA");
 		btnSendAdmin.setFont(new Font("Century Gothic", Font.BOLD, 12));
 		btnSendAdmin.setBounds(188, 118, 85, 21);
 		frame.getContentPane().add(btnSendAdmin);
 
 
-		
+
 		// button di invio mail
 		btnSendAdmin.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
 				String result = proxy.resetPassword(textEmail.getText());
 				if(result.equals("ESISTE")) { // se la mail è corretta viene inviata una nuova password 
 					JOptionPane.showMessageDialog(frame, "Hai ricevuto una mail con una nuova password");
@@ -92,8 +98,9 @@ public class ResetPasswordAdmin {
 					loginAdmin.frame.setLocationRelativeTo(null);
 					loginAdmin.frame.setVisible(true);
 					frame.dispose();
-				}else if(result.equals("NON ESISTE")) {
+				}else if(result.equals("NON ESISTE")) { // altrimenti ricevo un avviso di errore
 					JOptionPane.showMessageDialog(frame, "L'email inserita non esiste", "ERRORE", JOptionPane.ERROR_MESSAGE);
+					return;
 				}
 			}
 		});

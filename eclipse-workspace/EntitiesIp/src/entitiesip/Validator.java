@@ -12,35 +12,40 @@ import java.util.regex.Pattern;
  *
  */
 public class Validator {
+	private Pattern pattern;
+	private Matcher matcher;
 
 	// espressione regolare per uid: caratteri minuscoli,numeri,underscore,lunghezza tra 5 e 12
 	private final String uidPattern= "^[a-z0-9_]{5,12}$";
-	
+
+	//espressione regolare per verificare la correttezza di un nick
+	private final String nickName =  "^[a-z0-9_]{4,12}$";
+
 	// espressione regolare per verificare la correttezza di un indirizzo email
 	private final String emailPattern = "^[_a-z0-9-\\+]+(\\.[_a-z0-9-]+)*@"
 			+ "[a-z0-9-]+(\\.[a-z0-9]+)*(\\.[a-z]{2,})$";
 
-	
-	//espressione regolare per verificare la correttezza di un nome/cognome
+
+	/*espressione regolare per verificare la correttezza di un nome/cognome.
+	  Caratteri minuscoli, consentito l'uso dello spazio
+	 */
 	private final String surnameName = "[a-z]+([ '-][a-z]+)*";
 
 
 	/* La password deve rispettare le seguenti regole:almeno un numero,
 	 almeno una lettere minuscola, almeno una lettera maiuscola
 	 almeno un carattere speciale(.#$%^&+=),nessuno spazio,almeno 8 caratteri");*/
-
 	private final String password = "(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[.#$%^&+=])(?=\\S+$).{8,}";
 
-	private final String nickName =  "[a-zA-Z0-9\\._\\-]{3,}";
-	private Pattern pattern;
-	private Matcher matcher;
+
+
 
 
 	public Validator(){
 
 	}
-	
-	
+
+
 	/**
  	 Metodo che permette di convalidare il formato di un uid.
  	 @param uid Stringa che corrisponde all'uid da controllare
@@ -54,17 +59,14 @@ public class Validator {
 
 		return false;
 	}
-	
-	
+
+
 	/**
   	 Metodo che permette di convalidare il formato di un indirizzo di posta elettronica.
   	 @param email Stringa che corrisponde all'email da controllare
   	 @return Restituisce True o False a seconda che l'email sia valida o meno 
 	 */
 
-	
-	
-	
 	public boolean isEmailValid(String email){
 		pattern = Pattern.compile(emailPattern);
 		matcher = pattern.matcher(email);
@@ -143,10 +145,10 @@ public class Validator {
 		return null;
 
 	}
-/**
- * Metodo che genera un codice casuale per l'attivazione dell'utente in fase di registrazione o per il reset della password
- * @return
- */
+	/**
+	 * Metodo che genera un codice casuale per l'attivazione dell'utente in fase di registrazione o per il reset della password
+	 * @return
+	 */
 	public String codeGenerator() {
 		int n = 8;
 		SecureRandom secure = new SecureRandom();

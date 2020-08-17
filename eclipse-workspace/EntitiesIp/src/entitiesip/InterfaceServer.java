@@ -39,7 +39,7 @@ public interface InterfaceServer {
 	public String checkAvvio(String nameGame);
 	public String setAbbandono(String nameGame,String nick);
 	public String deleteGame(String nameGame);
-	public int getScores(String nameGame,String nick, String sessione);
+	public int getScores(String nameGame,String nick, int sessione);
 	public String addWord(Word word);
 	public ArrayList<String> getWord(String nameGame,String nick, int sessione);
 	public String getHost();

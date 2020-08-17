@@ -34,41 +34,52 @@ import javax.swing.JButton;
 // questa classe si occupa della modifica e cancellazione del profilo di tutti gli utenti registrati
 public class ProfilePlayer {
 
+	//elementi gui
 	public JFrame frame;
 	private JPanel panel;
-	private JLabel lblEditPlayer;
-	private JScrollPane scrollPane;
+
+
 	private JTable table;
+	private JScrollPane scrollPane;
 	private DefaultTableModel model;
-	private Proxy proxy;
-	private Object [] row = new Object[6];
-	private ArrayList<UserIp> user;
+
 
 	private JTextField textSurname;
 	private JTextField textName;
 	private JTextField textNick;
-	private JLabel lblSurname;
-	private JLabel lblName;
-	private JLabel lblNick;
 	private JTextField textEmail;
 	private JTextField textNewSurname;
 	private JTextField textNewName;
 	private JTextField textNewNick;
-	private JButton btnDelete;
-	private JButton btnEditName;
-	private JButton btnEditSurn;
-	private JButton btnEditNick;
+	private JTextField textSearch;
+
+	private JLabel lblEditPlayer;
+	private JLabel lblSurname;
+	private JLabel lblName;
+	private JLabel lblNick;
 	private JLabel lblEmail;
 	private JLabel lblErrSurn;
 	private JLabel lblErrName;
 	private JLabel lblErrNick;
+
+	private JButton btnDelete;
+	private JButton btnEditName;
+	private JButton btnEditSurn;
+	private JButton btnEditNick;
+	private JButton btnReturn;
+
+
 	boolean isOkSurname;
 	boolean isOkName;
 	boolean isOkNick;
 	boolean checkNick;
 	private Validator validator = new Validator();
-	private JTextField textSearch;
-	private JButton btnReturn;
+	private Proxy proxy;
+	private Object [] rowUserList = new Object[6]; 
+	private ArrayList<UserIp> user; //// arraylist con i campi relativi a ogni utente registrato
+
+
+
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -100,7 +111,7 @@ public class ProfilePlayer {
 		panel.setLayout(null);
 
 		lblEditPlayer = new JLabel("EDIT PROFILO UTENTE");
-		lblEditPlayer.setFont(new Font("Century Gothic", Font.PLAIN, 24));
+		lblEditPlayer.setFont(new Font("Century Gothic", Font.BOLD, 28));
 		lblEditPlayer.setForeground(Color.WHITE);
 		lblEditPlayer.setHorizontalAlignment(SwingConstants.CENTER);
 		lblEditPlayer.setBounds(344, 10, 520, 30);
@@ -244,18 +255,19 @@ public class ProfilePlayer {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// se il formato del nuovo cognome è valido
 				if(validator.isNameSurname(textNewSurname.getText())) {
 
-					textNewSurname.setBorder(new LineBorder(Color.GREEN,1));
-					lblErrSurn.setText("Formato valido");
+					textNewSurname.setBorder(new LineBorder(Color.GREEN,1)); // bordo si tinge di verde
+					lblErrSurn.setText("Formato valido"); // avviso da jlabel
 					isOkSurname = true;
+
+					// se il formato del nuovo cognome non è valido
 				}else if(!validator.isNameSurname(textNewSurname.getText())){
-					textNewSurname.setBorder(new LineBorder(Color.RED,1));
-					lblErrSurn.setText("Solo caratteri in minuscolo");
+					textNewSurname.setBorder(new LineBorder(Color.RED,1)); // bordo si tinge di rosso
+					lblErrSurn.setText("Solo caratteri in minuscolo"); // avviso da jlabel
 					isOkSurname = false;
 				}
-
-
 			}
 
 		});
@@ -264,13 +276,16 @@ public class ProfilePlayer {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
+				// se il formato del nuovo nome è valido
 				if(validator.isNameSurname(textNewName.getText())) {
-					textNewName.setBorder(new LineBorder(Color.GREEN,1));
-					lblErrName.setText("Formato valido");
+					textNewName.setBorder(new LineBorder(Color.GREEN,1));  // bordo si tinge di verde
+					lblErrName.setText("Formato valido");// avviso da jlabel
 					isOkName = true;
+
+					// se il formato del nuovo nome non è valido
 				}else if(!validator.isNameSurname(textNewName.getText())){
-					textNewName.setBorder(new LineBorder(Color.RED,1));
-					lblErrName.setText("Solo caratteri in minuscolo");
+					textNewName.setBorder(new LineBorder(Color.RED,1)); // bordo si tinge di rosso
+					lblErrName.setText("Solo caratteri in minuscolo");// avviso da jlabel
 					isOkName = false;
 				}
 			}
@@ -281,23 +296,26 @@ public class ProfilePlayer {
 
 			@Override
 			public void keyReleased(KeyEvent e) {
+
 				String result = proxy.checkNick(textNewNick.getText());
+				// se il formato del nick è valido
 				if(validator.isNickName(textNewNick.getText())) {
-					if(result.equals("ESISTE")) {
+					if(result.equals("ESISTE")) { // se il nick scelto esiste gia ricevo un msg di avviso
 						JOptionPane.showMessageDialog(frame, "Il nick scelto esiste già\nScegline un altro");
 						checkNick = false;
 
 					}else if(result.equals("NON ESISTE")) {
 						checkNick = true;
-
 					}
 
-					textNewNick.setBorder(new LineBorder(Color.GREEN,1));
-					lblErrNick.setText("Formato valido");
+					textNewNick.setBorder(new LineBorder(Color.GREEN,1)); // bordo si riempie di verde
+					lblErrNick.setText("Formato valido"); // avviso da jlabel
 					isOkNick = true;
+
+					// se il formato del nick non è valido
 				}else if(!validator.isNickName(textNewNick.getText())){
-					textNewNick.setBorder(new LineBorder(Color.RED,1));
-					lblErrNick.setText("Scegli almeno 3 caratteri");
+					textNewNick.setBorder(new LineBorder(Color.RED,1)); // bordo si riempie di rosso
+					lblErrNick.setText("Scegli almeno 4 caratteri");   // avviso da jlabel
 					isOkNick = false;
 				}
 			}
@@ -308,7 +326,7 @@ public class ProfilePlayer {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// se il nuovo cognome non corrisponde al formato o il campo cognome e nuovo cognome sono vuoti, ricevo un msg di errore
 				if(isOkSurname == false || textNewSurname.getText().equals("") || textSurname.getText().equals("")) {
 					JOptionPane.showMessageDialog(frame, "Errore: campo vuoto o non conforme", "ERRORE", JOptionPane.ERROR_MESSAGE);
 					return;
@@ -319,12 +337,12 @@ public class ProfilePlayer {
 				if(response == JOptionPane.YES_OPTION) {
 
 					String result = proxy.editSurname(textEmail.getText(), textNewSurname.getText());
-					if(result.equals("UPDATE")) {
+					if(result.equals("UPDATE")) { // se l'aggiornamento va a buon fine
 						JOptionPane.showMessageDialog(frame, "Modifica avvenuta con successo.");
-						refresh();
-						clear();	
+						refresh();// jtable aggiornata
+						clear();	 // campi resettati
 
-					}else if(result.equals("NOT UPDATE")) {
+					}else if(result.equals("NOT UPDATE")) { // se l'aggiornamento non va a buon fine
 						JOptionPane.showMessageDialog(frame, "Modifica non effettuata", "ERRORE", JOptionPane.ERROR_MESSAGE);
 
 					}
@@ -332,12 +350,13 @@ public class ProfilePlayer {
 			}
 		});
 
+
 		btnEditName.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-
+				// se il nuovo nome non corrisponde al formato o il campo nome e nuovo nome sono vuoti, ricevo un msg di errore
 				if(isOkName == false || textNewName.getText().equals("") || textName.getText().equals("")) {
 					JOptionPane.showMessageDialog(frame, "Errore: campo vuoto o non conforme", "ERRORE", JOptionPane.ERROR_MESSAGE);
 					return;
@@ -348,12 +367,12 @@ public class ProfilePlayer {
 				if(response == JOptionPane.YES_OPTION) {
 					String result = proxy.editName(textEmail.getText(), textNewName.getText());
 
-					if(result.equals("UPDATE")) {
+					if(result.equals("UPDATE")) { // se l'aggiornamento va a buon fine
 						JOptionPane.showMessageDialog(frame, "Modifica avvenuta con successo.");
-						refresh();
-						clear();
+						refresh(); // jtable aggiornata
+						clear(); // campi resettati
 
-					}else if(result.equals("NOT UPDATE")) {
+					}else if(result.equals("NOT UPDATE")) { // se l'aggiornamento nn va a buon fine
 						JOptionPane.showMessageDialog(frame, "Modifica non effettuata", "ERRORE", JOptionPane.ERROR_MESSAGE);
 
 					}
@@ -366,11 +385,12 @@ public class ProfilePlayer {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// se il nuovo nick non corrisponde al formato o il campo nick e nuovo nick sono vuoti, ricevo un msg di errore
 				if(isOkNick == false || textNewNick.getText().equals("") || textNick.getText().equals("")) {
 					JOptionPane.showMessageDialog(frame, "Errore: campo vuoto o non conforme", "ERRORE", JOptionPane.ERROR_MESSAGE);
 					return;
-				}else if (checkNick == false) {
+
+				}else if (checkNick == false) { // se il nick scelto esiste ricevo un msg di errore
 					JOptionPane.showMessageDialog(frame, "Errore: il nick scelto esiste già\n Scegline un altro", "ERRORE", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
@@ -378,12 +398,12 @@ public class ProfilePlayer {
 				int response = JOptionPane.showConfirmDialog(null, "Confermi la modifica del nick?", "Conferma", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(response == JOptionPane.YES_OPTION) {
 					String result = proxy.editNick(textEmail.getText(), textNewNick.getText());
-					if(result.equals("UPDATE")) {
+					if(result.equals("UPDATE")) { // se l'aggiornamento va a buon fine
 						JOptionPane.showMessageDialog(frame, "Modifica avvenuta con successo.");
-						refresh();
-						clear();
+						refresh(); // jtable aggiornata
+						clear(); // campi resettati
 
-					}else if(result.equals("NOT UPDATE")) {
+					}else if(result.equals("NOT UPDATE")) { // se l'aggiornamento non va a buon fine
 						JOptionPane.showMessageDialog(frame, "Modifica non effettuata", "ERRORE", JOptionPane.ERROR_MESSAGE);
 
 					}
@@ -391,12 +411,12 @@ public class ProfilePlayer {
 			}
 		});
 
-
+		// button di cancellazione utente
 		btnDelete.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
+				// se il campo email è vuoto non posso procedere con la cancellazione
 				if(textEmail.getText().equals("")) {
 					JOptionPane.showMessageDialog(frame, "Errore: campo email vuoto", "ERRORE", JOptionPane.ERROR_MESSAGE);
 					return;
@@ -406,15 +426,15 @@ public class ProfilePlayer {
 				int response = JOptionPane.showConfirmDialog(null, "Confermi la cancellazione dell'account?", "Conferma", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 				if(response == JOptionPane.YES_OPTION) {
 
-					String result = proxy.delete(textEmail.getText());
+					String result = proxy.delete(textEmail.getText()); // passo l'email dell'utente come parametro per la cancellazione
 
-
+					// se la cancellazione è andata a buon fine
 					if(result.equals("UPDATE")) {
 						JOptionPane.showMessageDialog(frame, "Cancellazione utente avvenuta con successo.");
-						refresh();
-						clear();
+						refresh(); // jtable viene aggiornata
+						clear(); // campi resettati
 
-
+						// se la cancellazione non è andata a buon fine
 					}else if(result.equals("NOT UPDATE")) {
 						JOptionPane.showMessageDialog(frame, "Cancellazione non effettuata", "ERRORE", JOptionPane.ERROR_MESSAGE);
 
@@ -426,6 +446,7 @@ public class ProfilePlayer {
 			}
 		});
 
+		// button di ritorno al menu principale
 		btnReturn.addActionListener(new ActionListener() {
 
 			@Override
@@ -451,7 +472,7 @@ public class ProfilePlayer {
 					textNick.setText("");
 					textEmail.setText("");
 				}
-				String word = textSearch.getText().toLowerCase();
+				String word = textSearch.getText().toLowerCase(); // stringa di ricerca
 				search(word);
 			}
 
@@ -486,30 +507,28 @@ public class ProfilePlayer {
 	// mostra la lista degli utente registrati
 	private void showUser() {
 
-		user = proxy.getUser();
+		user = proxy.getUser(); // arraylist con i campi relativi a ogni utente registrato
 		model = (DefaultTableModel)table.getModel();
 		for(int i=0; i<user.size();i++) {
 
-			row[0] = user.get(i).getSurname();
-			row[1] = user.get(i).getName();
-			row[2] = user.get(i).getNickName();
-			row[3] = user.get(i).getType();
-			row[4] = user.get(i).getEmail();
-			row[5] = user.get(i).getPassword();
-			model.addRow(row);
-
+			rowUserList[0] = user.get(i).getSurname();
+			rowUserList[1] = user.get(i).getName();
+			rowUserList[2] = user.get(i).getNickName();
+			rowUserList[3] = user.get(i).getType();
+			rowUserList[4] = user.get(i).getEmail();
+			rowUserList[5] = user.get(i).getPassword();
+			model.addRow(rowUserList);
 
 		}
 
 	}
 
-	// setta i campi della riga selezionata nella jtable nelle rispettive jtextfield
+	// setta i campi della riga selezionata nella jtable,  nelle rispettive jtextfield
 	private void click() {
 		table.addMouseListener(new MouseAdapter() {
 
 			@Override
 			public void mouseClicked(MouseEvent e) {
-
 
 				int sel=table.getSelectedRow();
 				sel = table.convertRowIndexToModel(sel);
@@ -527,7 +546,7 @@ public class ProfilePlayer {
 	}
 
 
-
+	// i campi vengono cancellati
 	private void clear() {
 		textSurname.setText("");
 		textName.setText("");

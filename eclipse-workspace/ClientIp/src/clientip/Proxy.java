@@ -526,11 +526,12 @@ public class Proxy implements InterfaceServer {
 
 
 	@Override
-	public int getScores(String nameGame, String nick, String sessione) {
+	public int getScores(String nameGame, String nick, int sessione) {
 		try {
 			ous.writeObject(CommCommands.GETSCORES);
-			String[] parameters = {nameGame,nick,sessione};
+			String[] parameters = {nameGame,nick};
 			ous.writeObject(parameters);
+			ous.writeObject(sessione);
 			int result = (int) ois.readObject();
 			return result;
 		} catch (Exception e) {

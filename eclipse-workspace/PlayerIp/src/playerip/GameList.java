@@ -31,31 +31,43 @@ import javax.swing.SwingConstants;
 
 public class GameList {
 
-	private DefaultTableModel model;
+	// elementi gui
 	public JFrame frmGameList;
-	private JLabel lblList;
 	private JTable table;
 	private JScrollPane scrollPane;
+	private DefaultTableModel model;
+	private Object [] row = new Object[6];
 	public JTextField textNomePartita;
 	private JTextField textData;
 	private JTextField textOra;
 	private JTextField textRichiesti;
-	private Object [] row = new Object[6];
+	private JTextField textIscritti;
+
+	private JButton btnReturn;
 	private JButton btnUnisciti;
-	private JLabel lblNomeGame;
+
+	private JLabel lblNomePart;
+	private JLabel lblNick;
+	private JLabel lblList;
+	private JLabel lblIscritti;
+	private JLabel lblRichiesti;
+	private JLabel lblData;
+	private JLabel lblOra;
+
+
 	boolean start = true;
 	boolean flag = true;
-	int numeri;
-	Match match;
-	String nick;
-	private JTextField textIscritti;
-	ArrayList<String> listNick;
+	int numeroIscritti;
+	private Timer timer; // timer per l'aggiornamento della jtable contenente la lista partite
+	private Match match;
+	private String nick;
+	private ArrayList<String> listNick; // arraylist degli iscritti alla i-esima partita
 	private Proxy proxy;
-	private JLabel lblNick;
-	private JButton btnReturn;
-	ArrayList<Game> lista;
-	ManagementServerDb sb = new ManagementServerDb("jdbc:postgresql://127.0.0.1:5432/dbip","postgres","pbkwsclc");
-	Timer timer; // timer per l'aggiornamento della jtable contenente la lista partite
+	private ArrayList<Game> lista; // arraylist contenente tutti i campi della partita
+	private ManagementServerDb sb;
+	private String host; 
+	private String userPostGres; 
+	private String passwPostGres;
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -88,8 +100,8 @@ public class GameList {
 		lblList.setHorizontalAlignment(SwingConstants.CENTER);
 		lblList.setBounds(169, 10, 281, 13);
 		frmGameList.getContentPane().add(lblList);
-		table = new JTable();
 
+		table = new JTable(); // jtable lista partite
 		table.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		table.setFont(new Font("Arial Black", Font.BOLD, 10));
 		table.setModel(new DefaultTableModel(
@@ -102,14 +114,14 @@ public class GameList {
 		table.setBounds(10, 44, 164, 182);
 		table.getTableHeader().setReorderingAllowed(false); // non consentire il riordino delle colonne
 		table.getTableHeader().setResizingAllowed(false); // ridimensionamento non consentito
-		table.setDefaultEditor(Object.class,null);
+		table.setDefaultEditor(Object.class,null); // campi non editabili
 		table.getColumnModel().getColumn(0).setPreferredWidth(75);
 		table.getColumnModel().getColumn(1).setPreferredWidth(70);
 		table.getColumnModel().getColumn(2).setPreferredWidth(65);
 		table.getColumnModel().getColumn(3).setPreferredWidth(85);
 		table.getColumnModel().getColumn(4).setPreferredWidth(75);
 		table.getColumnModel().getColumn(5).setPreferredWidth(270);
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // autoridimensionamento disattivato
 
 		scrollPane = new JScrollPane(table);
 		scrollPane.setFont(new Font("Arial Black", Font.PLAIN, 8));
@@ -117,10 +129,10 @@ public class GameList {
 		scrollPane.setLocation(10, 34);
 		frmGameList.getContentPane().add(scrollPane);
 
-		lblNomeGame = new JLabel("NOME PARTITA");
-		lblNomeGame.setFont(new Font("Tahoma", Font.BOLD, 9));
-		lblNomeGame.setBounds(597, 62, 81, 13);
-		frmGameList.getContentPane().add(lblNomeGame);
+		lblNomePart = new JLabel("NOME PARTITA");
+		lblNomePart.setFont(new Font("Tahoma", Font.BOLD, 9));
+		lblNomePart.setBounds(597, 62, 81, 13);
+		frmGameList.getContentPane().add(lblNomePart);
 
 		textNomePartita = new JTextField();
 		textNomePartita.setEditable(false);
@@ -129,10 +141,10 @@ public class GameList {
 		frmGameList.getContentPane().add(textNomePartita);
 		textNomePartita.setColumns(10);
 
-		JLabel lbl_Data = new JLabel("DATA");
-		lbl_Data.setFont(new Font("Tahoma", Font.BOLD, 9));
-		lbl_Data.setBounds(597, 91, 81, 13);
-		frmGameList.getContentPane().add(lbl_Data);
+		lblData = new JLabel("DATA");
+		lblData.setFont(new Font("Tahoma", Font.BOLD, 9));
+		lblData.setBounds(597, 91, 81, 13);
+		frmGameList.getContentPane().add(lblData);
 
 		textData = new JTextField();
 		textData.setEditable(false);
@@ -141,7 +153,7 @@ public class GameList {
 		textData.setBounds(708, 88, 96, 19);
 		frmGameList.getContentPane().add(textData);
 
-		JLabel lblOra = new JLabel("ORA");
+		lblOra = new JLabel("ORA");
 		lblOra.setFont(new Font("Tahoma", Font.BOLD, 9));
 		lblOra.setBounds(597, 120, 81, 13);
 		frmGameList.getContentPane().add(lblOra);
@@ -153,7 +165,7 @@ public class GameList {
 		textOra.setBounds(708, 117, 96, 19);
 		frmGameList.getContentPane().add(textOra);
 
-		JLabel lblRichiesti = new JLabel("RICHIESTI");
+		lblRichiesti = new JLabel("RICHIESTI");
 		lblRichiesti.setFont(new Font("Tahoma", Font.BOLD, 9));
 		lblRichiesti.setBounds(597, 146, 81, 13);
 		frmGameList.getContentPane().add(lblRichiesti);
@@ -171,7 +183,8 @@ public class GameList {
 		btnUnisciti.setBounds(708, 216, 96, 19);
 		frmGameList.getContentPane().add(btnUnisciti);
 		btnUnisciti.setEnabled(false);
-		JLabel lblIscritti = new JLabel("ISCRITTI");
+
+		lblIscritti = new JLabel("ISCRITTI");
 		lblIscritti.setFont(new Font("Tahoma", Font.BOLD, 9));
 		lblIscritti.setBounds(597, 175, 81, 13);
 		frmGameList.getContentPane().add(lblIscritti);
@@ -187,7 +200,8 @@ public class GameList {
 		btnReturn.setFont(new Font("Tahoma", Font.BOLD, 9));
 		btnReturn.setBounds(708, 413, 96, 19);
 		frmGameList.getContentPane().add(btnReturn);
-		nick = proxy.getNick(email);
+
+		nick = proxy.getNick(email); // recupero il nick del giocatore
 		lblNick = new JLabel("CIAO " + nick);
 		lblNick.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNick.setFont(new Font("Century Gothic", Font.BOLD, 10));
@@ -199,7 +213,7 @@ public class GameList {
 
 
 
-
+		// listener utilizzato per attivare il button unisciti, in base alla variazione del valore presente nella jtextfield textiscritti
 		textIscritti.getDocument().addDocumentListener(new DocumentListener() {
 
 			@Override
@@ -207,22 +221,21 @@ public class GameList {
 
 				try {
 
+					int playerRichiesti = Integer.parseInt(textRichiesti.getText()); // giocatori richiesti
+					int playerIscritti = Integer.parseInt(textIscritti.getText()); // giocatori iscritti
 
-					int number = Integer.parseInt(textRichiesti.getText()); // richiesti
-					int n = Integer.parseInt(textIscritti.getText()); //iscritti
-
-					if (n< number && !getPlayer(nick)) {
+					if (playerIscritti<playerRichiesti || !getPlayer(nick)) {
 
 						btnUnisciti.setEnabled(true);
 
-					} else if(n>= number || getPlayer(nick)) { 
+					} else if(playerIscritti>= playerRichiesti ||getPlayer(nick)) { 
 						btnUnisciti.setEnabled(false);
 
 					}
 
 
 				} catch (Exception e2) {
-
+					e2.printStackTrace();
 				}
 
 
@@ -234,22 +247,20 @@ public class GameList {
 			public void insertUpdate(DocumentEvent e) {
 				try {
 
+					int playerRichiesti = Integer.parseInt(textRichiesti.getText()); // giocatori richiesti
+					int playerIscritti = Integer.parseInt(textIscritti.getText()); // giocatori iscritti
 
-					int number = Integer.parseInt(textRichiesti.getText()); // richiesti
-					int n = Integer.parseInt(textIscritti.getText()); // iscritti
-
-					if (n< number && !getPlayer(nick))  {
+					if (playerIscritti<playerRichiesti || !getPlayer(nick)) {
 
 						btnUnisciti.setEnabled(true);
 
-					} else if(n>= number || getPlayer(nick)) { 
+					} else if(playerIscritti>= playerRichiesti ||getPlayer(nick)) { 
 						btnUnisciti.setEnabled(false);
 
 					}
 
-
 				} catch (Exception e2) {
-
+					e2.printStackTrace();
 				}
 
 
@@ -261,32 +272,37 @@ public class GameList {
 			public void changedUpdate(DocumentEvent e) {
 				try {
 
+					int playerRichiesti = Integer.parseInt(textRichiesti.getText()); // giocatori richiesti
+					int playerIscritti = Integer.parseInt(textIscritti.getText()); // giocatori iscritti
 
-					int number = Integer.parseInt(textRichiesti.getText()); // richiesti
-					int n = Integer.parseInt(textIscritti.getText()); // iscritti
-
-					if (n< number && !getPlayer(nick))  {
+					if (playerIscritti<playerRichiesti || !getPlayer(nick)) {
 
 						btnUnisciti.setEnabled(true);
 
-					} else if(n>= number || getPlayer(nick)) { 
+					} else if(playerIscritti>= playerRichiesti ||getPlayer(nick)) { 
 						btnUnisciti.setEnabled(false);
+
 					}
 
 
 				} catch (Exception e2) {
-
+					e2.printStackTrace();
 				}
-			}
-		});
 
+			}
+
+		});
+		host = proxy.getHost();
+		userPostGres = proxy.userPostGres();
+		passwPostGres = proxy.passwPostGres();
+		sb = new ManagementServerDb(host,userPostGres,passwPostGres);
 
 		btnUnisciti.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				match = new Match(textNomePartita.getText(), nick);
+				match = new Match(textNomePartita.getText(), nick); // crea l'oggetto match
 
 				String result = proxy.createMatch(match);// aggiunge al match l'utente
 
@@ -294,21 +310,22 @@ public class GameList {
 
 				String result2 = proxy.checkAvvio(textNomePartita.getText()); // Controlla che la partita possa partire
 
+				// se il giocatore non viene aggiunto al match o il numero degli iscritti non viene aggiornato ricevo un ms di errore
 				if(result.equals("FAILED") || result1.equals("NOT UPDATE")){
 					JOptionPane.showMessageDialog(frmGameList, "Non sei stato aggiunto alla partita");
 
 				}
-				if(result2.equals("SI INIZIA")) { // se la partita può iniziare inizia il countdown
-					timer.cancel();
-					Countdown countdown = new Countdown(proxy,email,textNomePartita.getText());
+				// se la partita può iniziare, inizia il countdown
+				if(result2.equals("SI INIZIA")) {
+					timer.cancel(); // timer di aggiornamento della jtable bloccato
+					Countdown countdown = new Countdown(proxy,email,textNomePartita.getText()); // vengo portato nella schermata di countdown
 					countdown.frmCountDown.setLocationRelativeTo(null);
 					countdown.frmCountDown.setVisible(true);
 					frmGameList.dispose();
 
 					// se la partita non può ancora iniziare e non è stata annullata, si rimane in attesa
-
 				}else if (result2.equals("NON PUO INIZIARE") && sb.checkDeleteGame(textNomePartita.getText())) { 
-					timer.cancel();
+					timer.cancel();// timer di aggiornamento della jtable bloccato
 					PleaseWait pleaseWait = new PleaseWait(proxy, email,textNomePartita.getText());
 					pleaseWait.frmPlease.setLocationRelativeTo(null);
 					pleaseWait.frmPlease.setVisible(true);
@@ -325,7 +342,7 @@ public class GameList {
 								// se la partita ancora non può iniziare e non è stata cancellata, si rimane in attesa
 								while (!sb.checkStart(textNomePartita.getText()) && sb.checkPlayerMatch(textNomePartita.getText(),nick)){ 
 
-								
+
 									try {
 										Thread.sleep(1000); // controllo avviene ogni secondo
 									} catch (InterruptedException e) {
@@ -337,7 +354,7 @@ public class GameList {
 									if(sb.checkStart(textNomePartita.getText())) { 
 										timer.cancel();
 										flag = false;
-										Countdown countdown = new Countdown(proxy,email,textNomePartita.getText());
+										Countdown countdown = new Countdown(proxy,email,textNomePartita.getText()); // schermata di attesa
 										countdown.frmCountDown.setLocationRelativeTo(null);
 										countdown.frmCountDown.setVisible(true);
 										pleaseWait.frmPlease.dispose();
@@ -347,9 +364,6 @@ public class GameList {
 									}else if(!sb.checkPlayerMatch(textNomePartita.getText(), nick)) {
 
 										flag = false;
-
-										System.out.println("thread gamelist chiuso " + nick);
-
 
 
 										// se la partita non può iniziare ed è stata eliminata il thread viene interrotto
@@ -368,6 +382,9 @@ public class GameList {
 
 			}
 		});
+
+
+		// button di ritorno al menu principale
 		btnReturn.addActionListener(new ActionListener() {
 
 			@Override
@@ -403,13 +420,12 @@ public class GameList {
 		});
 	}
 
-
 	// restituisce vero se il giocatore che accede alla lista delle partite è già presente in una
 	public boolean getPlayer(String nick) {
 
 		for(int i=0;i<lista.size();i++) 
 
-			listNick = proxy.getNickMatch(lista.get(i).getName());// listanick degli iscritti alla i-esima partita
+			listNick = proxy.getNickMatch(lista.get(i).getName()); // arraylist degli iscritti alla i-esima partita
 
 		if(listNick.contains(nick)) 
 			return true;
@@ -417,6 +433,7 @@ public class GameList {
 
 
 	}
+
 
 	// restituisce il nome della partita
 	public String getNamePartita() {
@@ -431,21 +448,22 @@ public class GameList {
 
 			@Override
 			public void run() {
-				lista = proxy.getMatch();
+
+				lista = proxy.getMatch(); // lista contenente tutti i campi della partita
 
 				DefaultTableModel model = (DefaultTableModel)table.getModel();
 				model.setRowCount(0);
 
 				for(int i=0;i<lista.size();i++) {
-					numeri = proxy.getIscritti(lista.get(i).getName());// numero degli iscritti
-					listNick = proxy.getNickMatch(lista.get(i).getName());// listanick degli iscritti alla i-esima partita
+					numeroIscritti = proxy.getIscritti(lista.get(i).getName());// numero degli iscritti alla i-esima partita
+					listNick = proxy.getNickMatch(lista.get(i).getName());// listaNickPlayer degli iscritti alla i-esima partita
 
-					row[0] = lista.get(i).getName();
-					row[1] = lista.get(i).getDate();
-					row[2] = lista.get(i).getHour();
-					row[3] = lista.get(i).getNumberPlayer();
-					row[4] = numeri;
-					row[5] = listNick;
+					row[0] = lista.get(i).getName(); // campo contenente il nome partita
+					row[1] = lista.get(i).getDate(); // campo contenente la data di creazione della partita
+					row[2] = lista.get(i).getHour(); // campo contenente ora di creazione
+					row[3] = lista.get(i).getNumberPlayer(); // campo contenente il numero dei giocatori richiesti
+					row[4] = numeroIscritti; // campo contenente il numero degli iscritti
+					row[5] = listNick; // campo contenente la lista dei giocatori iscritti alla i-esima partita
 					model.addRow(row);
 				}
 			}

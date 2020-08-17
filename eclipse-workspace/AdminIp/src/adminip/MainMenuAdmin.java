@@ -19,11 +19,18 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 public class MainMenuAdmin {
-
+	
+	//elementi gui
 	public JFrame frame;
-	private JTextField textUidAdmin;
 	private JPanel panel;
-
+	private JTextField textUidAdmin;
+	private JLabel lblMainAdmin;
+	private JButton btnEditProfileAdmin;
+	private JButton btnExitAdmin;
+	private JButton btnEditUser;
+	
+	
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -55,20 +62,20 @@ public class MainMenuAdmin {
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
-		JLabel lblMainAdmin = new JLabel("MAIN MENU ADMIN");
-		lblMainAdmin.setFont(new Font("Century Gothic", Font.PLAIN, 28));
+		lblMainAdmin = new JLabel("MAIN MENU ADMIN");
+		lblMainAdmin.setFont(new Font("Century Gothic", Font.BOLD, 28));
 		lblMainAdmin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMainAdmin.setForeground(Color.WHITE);
 		lblMainAdmin.setBackground(new Color(255, 255, 255));
 		lblMainAdmin.setBounds(26, 10, 389, 21);
 		panel.add(lblMainAdmin);
 
-		JButton btnEditProfileAdm = new JButton("EDIT PROFILO");
-		btnEditProfileAdm.setFont(new Font("Century Gothic", Font.BOLD, 9));
-		btnEditProfileAdm.setBounds(54, 102, 122, 21);
-		frame.getContentPane().add(btnEditProfileAdm);
+		btnEditProfileAdmin = new JButton("EDIT PROFILO");
+		btnEditProfileAdmin.setFont(new Font("Century Gothic", Font.BOLD, 9));
+		btnEditProfileAdmin.setBounds(54, 102, 122, 21);
+		frame.getContentPane().add(btnEditProfileAdmin);
 
-		JButton btnExitAdmin = new JButton("ESCI");
+		btnExitAdmin = new JButton("ESCI");
 		btnExitAdmin.setFont(new Font("Century Gothic", Font.BOLD, 9));
 		btnExitAdmin.setBounds(193, 155, 75, 21);
 		frame.getContentPane().add(btnExitAdmin);
@@ -81,14 +88,14 @@ public class MainMenuAdmin {
 		textUidAdmin.setColumns(10);
 		textUidAdmin.setText(uid);
 
-		JButton btnEditUser = new JButton("EDIT PROFILO USER");
+		btnEditUser = new JButton("EDIT PROFILO USER");
 		btnEditUser.setFont(new Font("Century Gothic", Font.BOLD, 9));
 		btnEditUser.setBounds(261, 102, 114, 21);
 		frame.getContentPane().add(btnEditUser);
 
-	
-		
-		
+
+
+		//// button per accedere alla schermata di edit profilo user
 		btnEditUser.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -97,14 +104,14 @@ public class MainMenuAdmin {
 				profilePlayer.frame.setLocationRelativeTo(null);
 				profilePlayer.frame.setVisible(true);
 				frame.dispose();
-				
-				
+
+
 			}
 		});
 
 
-
-		btnEditProfileAdm.addActionListener(new ActionListener() {
+		// button per accedere alla schermata di edit profilo admin
+		btnEditProfileAdmin.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -118,7 +125,7 @@ public class MainMenuAdmin {
 
 
 
-
+		// button di uscita, ritorno alla schermata di login
 		btnExitAdmin.addActionListener(new ActionListener() {
 
 			@Override

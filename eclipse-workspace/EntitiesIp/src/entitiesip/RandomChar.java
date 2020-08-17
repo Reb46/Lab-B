@@ -18,16 +18,16 @@ public class RandomChar {
 
 	String[] sediciLettere = new String[16]; // array che andrà a contenere le 16 lettere finali generate casualmente
 
-	int index; // uso la variabile index di tipo int per salvare il valore casuale compreso tra 0 e  la lunghezza della stringa (la faccia di ogni dado)
+	int index; // uso la variabile index di tipo int per salvare il valore casuale compreso tra 0 e la lunghezza della stringa (le 6 facce di ogni dado)
 
 	Random random = new Random();// Un'istanza di questa classe viene utilizzata per generare un flusso di numeri casuali.
 
 
-	String letteraDado; // variabile utilizzata per memorizzare la singola lettera scelta casualmente tra ognunna delle 6 facce dei 16 dadi
+	String letteraDado; // variabile utilizzata per memorizzare la singola lettera scelta casualmente tra ognuna delle 6 facce dei 16 dadi
 
 	StringBuilder sb = new StringBuilder();
 
-	String stringaFinale; // variabile contenente le 16 lettere 
+	String stringaFinale; // variabile contenente le 16 lettere utili per creazione dello scacchiere
 
 
 	public RandomChar() {
@@ -56,7 +56,7 @@ public class RandomChar {
 		facceDadi.add("DCMPAE");
 		facceDadi.add("ERINSH");
 
-		// converto l'arraylist "faccedadi" in un array(paroliere) contenente i 16 dadi con le rispettive facce
+		// converto l'arraylist "faccedadi" in un array(arrayDadi) contenente i 16 dadi con le rispettive facce
 		arrayDadi = facceDadi.toArray(new String[facceDadi.size()]); 
 
 		// con il metodo statico shuffle, permuto in modo casuale l'array paroliere passato come parametro
@@ -72,12 +72,12 @@ public class RandomChar {
 			// memorizzo la lettera scelta casualmente dalla i-esima faccia/stringa. index rapprenta la posizione casuale salvata nell'istruzione precedente
 			letteraDado = Character.toString(arrayDadi[i].charAt(index));
 
-			// array contenente le 16 lettere finali utili per lo scacchiere del gioco
+			// array contenente le 16 lettere finali
 			sediciLettere[i] = letteraDado;
 		}
 
 
-		// ognuna delle sedici lettere scelte casualmente vengono aggiunte alla variabile stringaFinale
+		// ognuna delle sedici lettere scelte casualmente vengono aggiunte alla variabile sb, che verra assegnata a stringaFinale
 		for(String x:sediciLettere)
 			sb.append(x); 
 		stringaFinale =sb.toString();

@@ -13,8 +13,15 @@ import javax.swing.SwingConstants;
 import clientip.Proxy;
 
 public class MainMenuPlayer {
-
+	// elementi gui
 	public JFrame frame;
+	private JPanel panel;
+	private JLabel lblMainAdmin;
+	private JButton btnEditProfile;
+	private JButton btnExit;
+	private JButton btnNewGame;
+	private	JButton btnGameList;
+
 
 
 	public static void main(String[] args) {
@@ -42,13 +49,13 @@ public class MainMenuPlayer {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
 
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		panel.setBackground(Color.GRAY);
 		panel.setBounds(0, 0, 588, 41);
 		frame.getContentPane().add(panel);
 		panel.setLayout(null);
 
-		JLabel lblMainAdmin = new JLabel("MAIN MENU PLAYER");
+		lblMainAdmin = new JLabel("MAIN MENU PLAYER");
 		lblMainAdmin.setFont(new Font("Century Gothic", Font.BOLD, 28));
 		lblMainAdmin.setHorizontalAlignment(SwingConstants.CENTER);
 		lblMainAdmin.setForeground(Color.WHITE);
@@ -56,28 +63,29 @@ public class MainMenuPlayer {
 		lblMainAdmin.setBounds(120, 10, 330, 21);
 		panel.add(lblMainAdmin);
 
-		JButton btnEditProfilePlr = new JButton("MODIFICA PROFILO");
-		btnEditProfilePlr.setFont(new Font("Century Gothic", Font.BOLD, 12));
-		btnEditProfilePlr.setBounds(107, 91, 152, 21);
-		frame.getContentPane().add(btnEditProfilePlr);
+		btnEditProfile = new JButton("MODIFICA PROFILO");
+		btnEditProfile.setFont(new Font("Century Gothic", Font.BOLD, 12));
+		btnEditProfile.setBounds(107, 91, 152, 21);
+		frame.getContentPane().add(btnEditProfile);
 
-		JButton btnExitPlayer = new JButton("ESCI");
-		btnExitPlayer.setFont(new Font("Century Gothic", Font.BOLD, 12));
-		btnExitPlayer.setBounds(243, 216, 85, 21);
-		frame.getContentPane().add(btnExitPlayer);
+		btnExit = new JButton("ESCI");
+		btnExit.setFont(new Font("Century Gothic", Font.BOLD, 12));
+		btnExit.setBounds(243, 216, 85, 21);
+		frame.getContentPane().add(btnExit);
 
-		JButton btnPlay = new JButton("NUOVA PARTITA");
-		btnPlay.setFont(new Font("Century Gothic", Font.BOLD, 12));
-		btnPlay.setBounds(328, 91, 152, 21);
-		frame.getContentPane().add(btnPlay);
+		btnNewGame = new JButton("NUOVA PARTITA");
+		btnNewGame.setFont(new Font("Century Gothic", Font.BOLD, 12));
+		btnNewGame.setBounds(328, 91, 152, 21);
+		frame.getContentPane().add(btnNewGame);
 
-		JButton btnGameList = new JButton("LISTA MATCH");
+		btnGameList = new JButton("LISTA MATCH");
 		btnGameList.setFont(new Font("Century Gothic", Font.BOLD, 12));
 		btnGameList.setBounds(205, 151, 152, 21);
 		frame.getContentPane().add(btnGameList);
 
 
-		btnEditProfilePlr.addActionListener(new ActionListener() {
+		// button per accedere al frame di modifica del proprio profilo
+		btnEditProfile.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -90,7 +98,8 @@ public class MainMenuPlayer {
 			}
 		});
 
-		btnPlay.addActionListener(new ActionListener() {
+		// button per accedere al frame di creazione di una nuova partita
+		btnNewGame.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -102,7 +111,8 @@ public class MainMenuPlayer {
 			}
 		});
 
-		btnExitPlayer.addActionListener(new ActionListener() {
+		// button per effettuare il logout
+		btnExit.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -114,7 +124,7 @@ public class MainMenuPlayer {
 		});
 
 
-
+		// button per accedere alla lista delle partita organizzate
 		btnGameList.addActionListener(new ActionListener() {
 
 			@Override

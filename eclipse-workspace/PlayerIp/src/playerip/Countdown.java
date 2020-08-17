@@ -12,11 +12,14 @@ import javax.swing.JPanel;
 import java.awt.Color;
 
 public class Countdown {
-
+	
+	// elementi gui
 	public JFrame frmCountDown;
 	private JLabel lblCountdown;
 	private JPanel panel;
 	private JLabel lblNewLabel;
+	private JLabel lblTimer;
+
 	Boolean flag = true;
 
 	public static void main(String[] args) {
@@ -43,7 +46,7 @@ public class Countdown {
 		frmCountDown.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmCountDown.getContentPane().setLayout(null);
 
-		JLabel lblTimer = new JLabel("INIZIO MATCH TRA:");
+		lblTimer = new JLabel("INIZIO MATCH TRA:");
 		lblTimer.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTimer.setFont(new Font("Century Gothic", Font.BOLD, 20));
 		lblTimer.setBounds(10, 68, 200, 27);
@@ -69,6 +72,7 @@ public class Countdown {
 		panel.add(lblNewLabel);
 
 
+		// thread per il countdownd dei 30 secondi
 		Thread t = new Thread() {
 
 			@Override
@@ -78,9 +82,7 @@ public class Countdown {
 				while(flag) {
 					while(i>0) {
 
-
 						lblCountdown.setText(""+i--);
-
 
 						try {
 							Thread.sleep(1000L); // controllo avviene ogni secondo
@@ -89,7 +91,7 @@ public class Countdown {
 							System.out.println("thread interrotto");
 						}
 
-						if(i==0) { // scadono 30 si avvia boogleGui
+						if(i==0) { // allo scadere dei 30 sec si avvia boogleGui
 							flag = false;					
 							BoggleGui boggleGui = new BoggleGui(proxy,email,nomePartita);
 							boggleGui.frmParoliere.setLocationRelativeTo(null);

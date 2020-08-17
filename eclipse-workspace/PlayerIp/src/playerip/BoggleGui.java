@@ -27,38 +27,58 @@ import javax.swing.JTable;
 
 public class BoggleGui {
 
+	// elementi gui
 	public JFrame frmParoliere;
-	private JPanel parolierePanel = new JPanel();
+
+	private JPanel parolierePanel;
+	private JPanel panelTitle;
 	private Font font = new Font("Arial",Font.BOLD, 24);
-	private String boxChar[][] = new String[4][4];
-	private JTextField[][] boggle;
-	boolean flag = true;
-	int sec =0;
-	int min = 2;
-	int punteggio;
-	private JScrollPane scrollWord;
-	Word word;
-	private JLabel lblMin;
-	private JLabel lblSec;
+
 	private JTable jTableWord;
 	private JTable jTableScores;
-	ArrayList<String> listNick;
-	private Proxy proxy;
-	private Object [] rowWord = new Object[1];
-	private Object [] row = new Object[2];
-	String nick;
-	JLabel lblNumSession;
-	int sessione = 1;
-	private DefaultTableModel model;
-	private JLabel lblNameGame = new JLabel("PARTITA");
-	private JTextField textPartita;
+	private JScrollPane scrollWord;
 	private JScrollPane scrollPaneScores;
-	private JTextField textWord;
-	String host; 
-	String userPostGres; 
-	String passwPostGres;
 
-	ManagementServerDb sb;
+
+	private JLabel lblSession;
+	private JLabel lblTime;
+	private JLabel lblNumSession;
+	private JLabel lblTitle;
+
+	private JLabel lblMin;
+	private JLabel lblSec;
+	private JLabel lblHello;
+	private JLabel lblWord;
+	private JLabel lblNameGame;
+	private JLabel lblColons;
+
+	private Object [] rowWord = new Object[1];
+	private Object [] rowListScores = new Object[2];
+
+	private JTextField textPartita;
+	private JTextField[][] boggle;
+	private JTextField textWord;
+
+	private JButton btnSendWord;
+	private JButton btnExit;
+
+
+
+	private String boxChar[][] = new String[4][4];
+	boolean flag = true;
+	int sec = 0;
+	int min = 2;
+	int punteggio;
+	private Word word;
+	private Proxy proxy;
+	private String nick;
+	int sessione = 1;
+	private ManagementServerDb sb;
+	private String host; 
+	private String userPostGres; 
+	private String passwPostGres;
+
+
 
 
 	public static void main(String[] args) {
@@ -72,6 +92,7 @@ public class BoggleGui {
 					GameList gameList = new GameList(proxy, email);
 					String nomePartita = gameList.getNamePartita();
 					BoggleGui window = new BoggleGui(proxy,email,nomePartita);
+					window.frmParoliere.setLocationRelativeTo(null);
 					window.frmParoliere.setVisible(true);
 
 
@@ -84,26 +105,30 @@ public class BoggleGui {
 
 
 	public BoggleGui(Proxy proxy,String email,String nomePartita) {
-
 		this.proxy = proxy;
+
 		frmParoliere = new JFrame();
 		frmParoliere.setTitle("IL PAROLIERE");
 		frmParoliere.setBounds(100, 100, 638, 557);
 		frmParoliere.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmParoliere.getContentPane().setLayout(null);
-		parolierePanel.setFont(new Font("Arial Black", Font.BOLD, 12));
 
 		// JPanel del paroliere
+		parolierePanel = new JPanel();
 		parolierePanel.setBounds(10, 118, 220, 200);
-		frmParoliere.getContentPane().add(parolierePanel);
 		parolierePanel.setLayout(new GridLayout(4,4));
 		parolierePanel.setFont(new Font("Arial Black", Font.BOLD, 12));
+		frmParoliere.getContentPane().add(parolierePanel);
+
 		nick = proxy.getNick(email); // recupero il nick del giocatore
-		JLabel lblHello = new JLabel("Ciao " + nick );
+
+		lblHello = new JLabel("Ciao " + nick );
 		lblHello.setFont(new Font("Century Gothic", Font.BOLD, 10));
 		lblHello.setBounds(276, 60, 111, 13);
 
 		frmParoliere.getContentPane().add(lblHello);
+
+		lblNameGame = new JLabel("PARTITA");
 		lblNameGame.setFont(new Font("Century Gothic", Font.BOLD, 10));
 		lblNameGame.setBounds(22, 95, 45, 13);
 
@@ -117,25 +142,25 @@ public class BoggleGui {
 		frmParoliere.getContentPane().add(textPartita);
 		textPartita.setColumns(10);
 
-		JPanel panelTitle = new JPanel();
+		panelTitle = new JPanel();
 		panelTitle.setBackground(Color.GRAY);
 		panelTitle.setBounds(0, 0, 624, 50);
 		frmParoliere.getContentPane().add(panelTitle);
 		panelTitle.setLayout(null);
 
-		JLabel lblNewLabel = new JLabel("IL PAROLIERE");
-		lblNewLabel.setForeground(Color.WHITE);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel.setFont(new Font("Century Gothic", Font.BOLD, 28));
-		lblNewLabel.setBounds(153, 10, 350, 30);
-		panelTitle.add(lblNewLabel);
+		lblTitle = new JLabel("IL PAROLIERE");
+		lblTitle.setForeground(Color.WHITE);
+		lblTitle.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTitle.setFont(new Font("Century Gothic", Font.BOLD, 28));
+		lblTitle.setBounds(153, 10, 350, 30);
+		panelTitle.add(lblTitle);
 
-		JButton btnExit = new JButton("ABBANDONA");
+		btnExit = new JButton("ABBANDONA");
 		btnExit.setFont(new Font("Century Gothic", Font.BOLD, 9));
 		btnExit.setBounds(490, 478, 111, 21);
 		frmParoliere.getContentPane().add(btnExit);
 
-		JLabel lblTime = new JLabel("CLESSIDRA");
+		lblTime = new JLabel("CLESSIDRA");
 		lblTime.setHorizontalAlignment(SwingConstants.CENTER);
 		lblTime.setFont(new Font("Century Gothic", Font.BOLD, 12));
 		lblTime.setBounds(512, 95, 62, 13);
@@ -153,7 +178,7 @@ public class BoggleGui {
 		lblSec.setBounds(558, 118, 16, 13);
 		frmParoliere.getContentPane().add(lblSec);
 
-		jTableScores = new JTable();
+		jTableScores = new JTable(); // jtable punteggio
 
 		jTableScores.setBorder(new BevelBorder(BevelBorder.LOWERED, null, null, null, null));
 		jTableScores.setFont(new Font("Arial Black", Font.BOLD, 10));
@@ -169,13 +194,12 @@ public class BoggleGui {
 		jTableScores.setDefaultEditor(Object.class,null);
 		jTableScores.getColumnModel().getColumn(0).setPreferredWidth(80);
 		jTableScores.getColumnModel().getColumn(1).setPreferredWidth(58);
-
 		jTableScores.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		scrollPaneScores = new JScrollPane(jTableScores);
 		scrollPaneScores.setBounds(466, 143, 135, 175);
 		frmParoliere.getContentPane().add(scrollPaneScores);
 
-		JLabel lblSession = new JLabel("SESSIONE");
+		lblSession = new JLabel("SESSIONE");
 		lblSession.setBounds(240, 95, 62, 13);
 		frmParoliere.getContentPane().add(lblSession);
 
@@ -189,66 +213,63 @@ public class BoggleGui {
 		frmParoliere.getContentPane().add(textWord);
 		textWord.setColumns(10);
 
-		JLabel lblWord = new JLabel("SCRIVI LA PAROLA");
+		lblWord = new JLabel("SCRIVI LA PAROLA");
 		lblWord.setHorizontalAlignment(SwingConstants.CENTER);
 		lblWord.setFont(new Font("Century Gothic", Font.BOLD, 10));
 		lblWord.setBounds(10, 328, 102, 13);
 		frmParoliere.getContentPane().add(lblWord);
 
-		JButton btnSendWord = new JButton("INVIA");
+		btnSendWord = new JButton("INVIA");
 		btnSendWord.setBounds(116, 350, 85, 21);
 		frmParoliere.getContentPane().add(btnSendWord);
 
-		jTableWord = new JTable();
+		jTableWord = new JTable(); // jtable per parole individuate
 		jTableWord.setModel(new DefaultTableModel(
 				new Object[][] {
 				},
 				new String[] {
 				"PAROLE"}
 				));
+
 		jTableWord.setBounds(10, 44, 164, 182);
 		jTableWord.getTableHeader().setReorderingAllowed(false); // non consentire il riordino delle colonne
 		jTableWord.getTableHeader().setResizingAllowed(false); // ridimensionamento non consentito
-		jTableWord.setDefaultEditor(Object.class,null);
+		jTableWord.setDefaultEditor(Object.class,null); // modifica campi non consentita
 		jTableWord.getColumnModel().getColumn(0).setPreferredWidth(80);
-
-
-
 
 		scrollWord = new JScrollPane(jTableWord);
 		scrollWord.setBounds(211, 328, 148, 171);
 		frmParoliere.getContentPane().add(scrollWord);
 
-		JLabel lblNewLabel_1 = new JLabel(":");
-		lblNewLabel_1.setFont(new Font("Century Gothic", Font.BOLD, 14));
-		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setBounds(536, 118, 16, 13);
-		frmParoliere.getContentPane().add(lblNewLabel_1);
+		lblColons = new JLabel(":");
+		lblColons.setFont(new Font("Century Gothic", Font.BOLD, 14));
+		lblColons.setHorizontalAlignment(SwingConstants.CENTER);
+		lblColons.setBounds(536, 118, 16, 13);
+		frmParoliere.getContentPane().add(lblColons);
 
-		// variabile contenente le 16 lettere generate casualmente per la partita
+		// variabile contenente le 16 lettere dello scacchiere per questa partita
 		String lettere = proxy.getRandomChar(textPartita.getText());
 
-
-
-		// 16 jtextfield che conterranno ognuna le 16 lettere
+		// 16 jtextfield che conterranno una delle 16 lettere per la composizione dello scacchiere
 		boggle = new JTextField[boxChar.length][boxChar.length];
 
 
 		for(int i=0; i<4;i++) {
 			for (int j = 0; j < 4; j++) {
-				boxChar[i][j] = Character.toString(lettere.charAt(i*4 + j));
-				if(boxChar[i][j].contains("Q")) {
+				boxChar[i][j] = Character.toString(lettere.charAt(i*4 + j)); // costruisco una matrice 4x4 di tipo string
+				if(boxChar[i][j].contains("Q")) { // se è presente la lettera q verra aggiunta la u
 					boxChar[i][j] = "Qu";
 				}
 
-				boggle[i][j] = new JTextField(boxChar[i][j]);
-				boggle[i][j].setFont(font);
-				boggle[i][j].setHorizontalAlignment(JTextField.CENTER);
-				boggle[i][j].setEditable(false);
-				boggle[i][j].setBorder(new BevelBorder(BevelBorder.RAISED));
-				boggle[i][j].setBackground(Color.WHITE);
+				boggle[i][j] = new JTextField(boxChar[i][j]); // ognuna delle 16 jtextfield riceverà una lettera
+				boggle[i][j].setFont(font); // setto il font
+				boggle[i][j].setHorizontalAlignment(JTextField.CENTER); // centro la lettera
+				boggle[i][j].setEditable(false); // non editabile
+				boggle[i][j].setBorder(new BevelBorder(BevelBorder.RAISED)); // bordo jtext rialzato
+				boggle[i][j].setBackground(Color.WHITE); // colore della jtext bianco
 				boggle[i][j].setHighlighter(null); // disabilita evindaziatore di testo
-				parolierePanel.add(boggle[i][j]);
+				parolierePanel.add(boggle[i][j]); // aggiungo al panel la matrice di jtetxfield
+
 
 				// se decido di annullare una partita vengo disconnesso dalla piattaforma
 				btnExit.addActionListener(new ActionListener() {
@@ -260,7 +281,6 @@ public class BoggleGui {
 							String result = proxy.deleteGame(nomePartita);
 							if(result.equals("ANNULLATA")) {
 								frmParoliere.dispose();						
-
 								System.exit(0);
 							}
 						}
@@ -268,12 +288,15 @@ public class BoggleGui {
 				});
 			}
 		}
+
 		host = proxy.getHost();
 		userPostGres = proxy.userPostGres();
 		passwPostGres = proxy.passwPostGres();
 		sb = new ManagementServerDb(host,userPostGres,passwPostGres);
-		timer();
 
+		// countdown clessidra di gioco
+		timer();
+		showListScores();
 
 		Thread t = new Thread() {
 
@@ -282,8 +305,9 @@ public class BoggleGui {
 
 				while(flag) {
 
-					while(sb.checkDeleteGame(nomePartita)) { // controlla che la partita non sia stata cancellata
-						System.out.println("partita non cancellata " + nick);
+					// controlla che la partita non sia stata cancellata
+					while(sb.checkDeleteGame(nomePartita)) { 
+					
 						try {
 							Thread.sleep(1000); // controllo avviene ogni secondo
 						} catch (InterruptedException e) {
@@ -299,6 +323,7 @@ public class BoggleGui {
 							mainMenuPlayer.frame.setVisible(true);
 							frmParoliere.dispose();
 							JOptionPane.showMessageDialog(mainMenuPlayer.frame, "PARTITA ANNULLATA DA UN GIOCATORE");
+
 						}else if (min == 0 && sec == 0) {
 							flag = false;
 							btnExit.setEnabled(false);
@@ -311,34 +336,36 @@ public class BoggleGui {
 		};
 		t.start();
 
-
-
-
 		// invia le parole al database
 		btnSendWord.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
+				// se il campo usato per la parola scelta è vuoto o superiore alle 16 lettere viene mostrato un avviso
 				if(textWord.getText().equals("") || textWord.getText().length() > 16) {
 					JOptionPane.showMessageDialog(frmParoliere,"ERRORE PAROLA TROPPO LUNGA O CAMPO VUOTO","FAI ATTENZIONE",JOptionPane.ERROR_MESSAGE);
 					return;
 				}
+
+				// creo l'oggetto di tipo Word a cui passo come parametro il nome della partita,il nick, la parola individuata e la sessione di gioco
 				word = new Word(textPartita.getText(), nick, textWord.getText(), sessione);
-				String result = proxy.addWord(word);
-				showWord(); // le parole vengono inviate alla jtable
+
+				// dopo aver inviato l'oggetto di tipo word ricevo il risultato.
+				String result = proxy.addWord(word); 
+
+				showWord(); // le parole digitate dal giocatore vengono aggiunte alla jtable
+
+				// se il valore di ritorno è: "non aggiunta", ricevo un messaggio di avviso
 				if(result.equals("NON AGGIUNTA")) {
 					JOptionPane.showMessageDialog(frmParoliere, "PAROLA AGGIUNTA IN PRECEDENZA");
 				}
-				textWord.setText("");
+				textWord.setText(""); // setta il campo su vuoto dopo aver premuto il pulsante invia
 
 			}
 		});
 
 	}
-
-
-
 
 	// countdown clessidra di gioco
 	public  void timer() {
@@ -359,40 +386,47 @@ public class BoggleGui {
 
 				lblMin.setText("" + min);
 				lblSec.setText("" + sec--);
+
+
 				if (sec == 0 && min == 0) {
-					timer.cancel();
+					timer.cancel(); // quando il tempo della clessidra scade, il timer viene bloccato
 
 				}
 
 			}
 		}, 100, 1000); // Pianifica l'attività specificata per l'esecuzione ripetuta a partire dal ritardo specificato.
-
+		// 100 Questo è il ritardo in millisecondi prima dell'esecuzione dell'attività.
+		// 1000 Questo è il tempo in millisecondi tra le esecuzioni successive di attività. 
 	}
 
 
 
-	// inserisce nella jtable il nick e il rispettivo punteggio totale dei giocatori
+	// inserisce nella jtable il nick dei giocatori partecipanti con il rispettivo punteggio
 	public void showListScores() {
-
-		model = (DefaultTableModel)jTableScores.getModel();
+		ArrayList<String> listNick = new ArrayList<String>();
+		DefaultTableModel model = (DefaultTableModel)jTableScores.getModel();
+		
 		listNick = proxy.getNickMatch(textPartita.getText()); 
+		
 		for(int i=0;i<listNick.size();i++) {
-			punteggio = proxy.getScores(textPartita.getText(), listNick.get(i),lblNumSession.getText());
+			punteggio = proxy.getScores(textPartita.getText(), listNick.get(i),sessione);
 
-			row[0] = listNick.get(i);
-			row[1] = punteggio;
-			model.addRow(row);
+			rowListScores[0] = listNick.get(i);
+			rowListScores[1] = punteggio;
+			model.addRow(rowListScores);
 
 		}
 	}
 
 	// le parole scelte dal giocatore vengono inserite nella jtable
 	public void showWord() {
+
 		ArrayList<String> parolaList = new ArrayList<String>();
 		DefaultTableModel model = (DefaultTableModel)jTableWord.getModel();
 		model.setRowCount(0);
 
-		parolaList = proxy.getWord(textPartita.getText(),nick,sessione);
+		// arraylist contenente le parole individuate dal giocatote nella partita/sessione di gioco
+		parolaList = proxy.getWord(textPartita.getText(),nick,sessione); 
 
 		for(int i=0;i<parolaList.size();i++) {
 			rowWord[0] = parolaList.get(i);

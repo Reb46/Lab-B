@@ -35,20 +35,39 @@ import javax.swing.border.BevelBorder;
 
 public class NewGame {
 
+	// elementi gui
 	public JFrame frmNewGame;
+	private JPanel panel;
+	private JSpinner spinnerPlayer;
+	
 	private JTextField textNameGame;
 	private JTextField textDate;
 	private JTextField textHour;
+	
+	private JLabel lblNewGame;
+	private JLabel lblNewName;
+	private JLabel lblDate;
+	private JLabel lblHour;
+	private JLabel lblHello;
+	private JLabel lblSetErr;
+	private JLabel lblPlayer;
+	
+	private JButton btnReturn;
 	private JButton btnCreateGame;
+	
+	
 	private Game newGame;
 	private Match match;
 	private Validator validator =  new Validator();
 	boolean flag = true;
 	boolean isName;
 	boolean checkName;
-	int number=2; // numero min giocatori
-	String nick = "";
-	ManagementServerDb sb = new ManagementServerDb("jdbc:postgresql://127.0.0.1:5432/dbip","postgres","pbkwsclc");
+	int playerRichiesti = 2; // numero min giocatori
+	private String nick = "";
+	private ManagementServerDb sb;
+	private String host; 
+	private String userPostGres; 
+	private String passwPostGres;
 	private RandomChar randomChar = new RandomChar();
 
 	public static void main(String[] args) {
@@ -73,20 +92,20 @@ public class NewGame {
 		frmNewGame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmNewGame.getContentPane().setLayout(null);
 		frmNewGame.setResizable(false);
-		JPanel panel = new JPanel();
+		panel = new JPanel();
 		panel.setBackground(Color.GRAY);
 		panel.setBounds(0, 0, 540, 48);
 		frmNewGame.getContentPane().add(panel);
 		panel.setLayout(null);
 
-		JLabel lblNewGame = new JLabel("NUOVA PARTITA");
+		lblNewGame = new JLabel("NUOVA PARTITA");
 		lblNewGame.setFont(new Font("Century Gothic", Font.BOLD, 26));
 		lblNewGame.setForeground(Color.WHITE);
 		lblNewGame.setHorizontalAlignment(SwingConstants.CENTER);
 		lblNewGame.setBounds(95, 10, 349, 30);
 		panel.add(lblNewGame);
 
-		JLabel lblNewName = new JLabel("NOME PARTITA");
+		lblNewName = new JLabel("NOME PARTITA");
 		lblNewName.setHorizontalAlignment(SwingConstants.LEFT);
 		lblNewName.setFont(new Font("Tahoma", Font.BOLD, 9));
 		lblNewName.setBounds(98, 87, 77, 13);
@@ -98,7 +117,7 @@ public class NewGame {
 		frmNewGame.getContentPane().add(textNameGame);
 		textNameGame.setColumns(10);
 
-		JLabel lblDate = new JLabel("DATA");
+		lblDate = new JLabel("DATA");
 		lblDate.setHorizontalAlignment(SwingConstants.LEFT);
 		lblDate.setFont(new Font("Tahoma", Font.BOLD, 9));
 		lblDate.setBounds(98, 125, 46, 13);
@@ -112,7 +131,7 @@ public class NewGame {
 		frmNewGame.getContentPane().add(textDate);
 		textDate.setColumns(10);
 
-		JLabel lblHour = new JLabel("ORA");
+		lblHour = new JLabel("ORA");
 		lblHour.setHorizontalAlignment(SwingConstants.LEFT);
 		lblHour.setFont(new Font("Tahoma", Font.BOLD, 9));
 		lblHour.setBounds(98, 163, 46, 13);
@@ -141,31 +160,31 @@ public class NewGame {
 		btnCreateGame.setBounds(98, 244, 116, 19);
 		frmNewGame.getContentPane().add(btnCreateGame);
 
-		JLabel lblSetErr = new JLabel("");
+		lblSetErr = new JLabel("");
 		lblSetErr.setFont(new Font("Century Gothic", Font.BOLD, 9));
 		lblSetErr.setHorizontalAlignment(SwingConstants.LEFT);
 		lblSetErr.setBounds(308, 87, 85, 13);
 		frmNewGame.getContentPane().add(lblSetErr);
 
-		JSpinner spinnerPlayer = new JSpinner();
+		spinnerPlayer = new JSpinner();
 		spinnerPlayer.setFont(new Font("Century Gothic", Font.BOLD, 10));
 		spinnerPlayer.setModel(new SpinnerNumberModel(2, 2, 6, 1));
 		spinnerPlayer.setBounds(234, 196, 46, 20);
 		spinnerPlayer.setEditor(new JSpinner.DefaultEditor(spinnerPlayer));
 		frmNewGame.getContentPane().add(spinnerPlayer);
 
-		JLabel lblPlayer = new JLabel("N\u00B0 GIOCATORI");
+		lblPlayer = new JLabel("N\u00B0 GIOCATORI");
 		lblPlayer.setHorizontalAlignment(SwingConstants.LEFT);
 		lblPlayer.setFont(new Font("Tahoma", Font.BOLD, 9));
 		lblPlayer.setBounds(98, 199, 96, 13);
 		frmNewGame.getContentPane().add(lblPlayer);
 		nick = proxy.getNick(email);
 
-		JLabel lblHello = new JLabel("Benvenuto " + nick.toUpperCase());
+		lblHello = new JLabel("Benvenuto " + nick.toUpperCase());
 		lblHello.setBounds(205, 58, 152, 13);
 		frmNewGame.getContentPane().add(lblHello);
 
-		JButton btnReturn = new JButton("INDIETRO");
+		btnReturn = new JButton("INDIETRO");
 		btnReturn.setFont(new Font("Tahoma", Font.BOLD, 9));
 		btnReturn.setBounds(238, 244, 96, 19);
 		frmNewGame.getContentPane().add(btnReturn);
@@ -174,24 +193,28 @@ public class NewGame {
 			@Override
 			public void keyReleased(KeyEvent e) {
 				String result = proxy.checkNameGame(textNameGame.getText());
+				// se il formato del nome della partita è valido
 				if(validator.isNameSurname(textNameGame.getText())) {
+					// il nome scelto per la partita esiste gia ricevo un avviso
 					if(result.equals("ESISTE")) {
 						JOptionPane.showMessageDialog(frmNewGame, "Il nome scelto esiste già\nScegline un altro");
 						checkName = false;
-
+						// altrimenti non ricevo nessun avviso
 					}else if(result.equals("NON ESISTE")) {
 						checkName = true;
 
 					}
 
 					isName = true;
-					textNameGame.setBorder(new LineBorder(Color.GREEN));
-					lblSetErr.setText("Formato valido");
+					textNameGame.setBorder(new LineBorder(Color.GREEN)); // bordo si tinge di verde
+					lblSetErr.setText("Formato valido"); // avviso da jlabel
 
+					// se il formato del nome non è valido
 				}else if(!validator.isPassword(textNameGame.getText())) {
+					
 					isName = false;
-					textNameGame.setBorder(new LineBorder(Color.RED,1));
-					lblSetErr.setText("Formato non valido");
+					textNameGame.setBorder(new LineBorder(Color.RED,1)); // bordo si tinge di rosso
+					lblSetErr.setText("Formato non valido"); // avviso da jlabel
 
 				}
 
@@ -204,33 +227,37 @@ public class NewGame {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
-				number = (Integer)spinnerPlayer.getValue();
+				playerRichiesti = (Integer)spinnerPlayer.getValue();
 
 			}
 		});
 
+		host = proxy.getHost();
+		userPostGres = proxy.userPostGres();
+		passwPostGres = proxy.passwPostGres();
+		sb = new ManagementServerDb(host,userPostGres,passwPostGres);
 
-		// creo una nuova partita
+		// button per creare una nuova partita
 		btnCreateGame.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				if(isName == false || checkName == false) { // la partita deve necessariamente avere un nome
+				// la partita deve necessariamente avere un nome non scelto gia per altre partite e il formato del nome valido
+				if(isName == false || checkName == false) { 
 					JOptionPane.showMessageDialog(frmNewGame, "IL CAMPO NON PUO' ESSERE VUOTO O IL NOME ESISTE GIA'", "ERRORE", JOptionPane.ERROR_MESSAGE);
 					return;
-
+					// se il formato è rispettato e il nome non è stato scelto per altre partite
 				}else if(isName == true  && checkName == true){
 
-					String random = randomChar.setChar();
+					String random = randomChar.setChar(); // memorizzo la stringa random per lo scacchiere
 
-					int number = (Integer)spinnerPlayer.getValue();// numero player scelto tramite lo spinner
+					int number = (Integer)spinnerPlayer.getValue();// memorizzo il numero di giocatori scelto tramite lo spinner
 
-					newGame = new Game(textNameGame.getText(),textDate.getText(),textHour.getText(),number,random);//creo l'oggetto newGame
+					newGame = new Game(textNameGame.getText(),textDate.getText(),textHour.getText(),number,random);//creo l'oggetto per la nuova partita
 
 					match = new Match(textNameGame.getText(), nick); // creo l'oggetto match
 
-					String result = proxy.createNewGame(newGame); // crea una nuova partita
+					String result = proxy.createNewGame(newGame); // passo l'oggetto newgame al metodo createnewgame
 
 					String result_1 = proxy.createMatch(match); // chi crea la partita viene aggiunto al match come primo iscritto
 
@@ -239,7 +266,7 @@ public class NewGame {
 					String result_3 = proxy.checkAvvio(textNameGame.getText()); // // Controlla che la partita possa cominciare
 
 
-
+					// se la partita non è stata creata o il match non è stato creato o il numero dei giocatori iscritti non viene aggionato
 					if (result.equals("FAILED") || result_1.equals("FAILED") || result_2.equals("NOT UPDATE")) {
 						JOptionPane.showMessageDialog(frmNewGame, "Regitrazione non effettuata", "ERRORE", JOptionPane.ERROR_MESSAGE);
 
@@ -252,18 +279,18 @@ public class NewGame {
 						pleaseWait.frmPlease.setVisible(true);
 						frmNewGame.dispose();
 
-
+						// si avvia un thread
 						Thread thread = new Thread() {
 
 							@Override
 							public void run() {
 
 
-								while(flag) {// il ciclo va impostato a true per partire
+								while(flag) {// il ciclo impostato a true per partire
 
 									// se la partita ancora non può iniziare e non è stata cancellata, si rimane in attesa
 									while (!sb.checkStart(textNameGame.getText()) && sb.checkPlayerMatch(textNameGame.getText(),nick)){ 
-										System.out.println("la partita non può essere avviataaaaa newgame " + nick);
+										
 										try {
 											Thread.sleep(1000); // controllo avviene ogni secondo
 										} catch (InterruptedException e) {
@@ -275,7 +302,7 @@ public class NewGame {
 										if(sb.checkStart(textNameGame.getText())) { 
 
 											flag = false; // blocco il ciclo while e quindi il thread
-											
+											// vengo portato nel frame countdown
 											Countdown countdown = new Countdown(proxy,email,textNameGame.getText());
 											countdown.frmCountDown.setLocationRelativeTo(null);
 											countdown.frmCountDown.setVisible(true);
@@ -309,7 +336,7 @@ public class NewGame {
 
 
 
-		// Ritorna al menu principale
+		// button di ritorno al menu principale
 		btnReturn.addActionListener(new ActionListener() {
 
 			@Override
