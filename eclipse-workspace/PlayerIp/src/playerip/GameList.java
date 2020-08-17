@@ -33,18 +33,18 @@ public class GameList {
 
 	// elementi gui
 	public JFrame frmGameList;
-	private JTable table;
-	private JScrollPane scrollPane;
+	private JTable table; // lista partite
+	private JScrollPane scrollPane; // JScrollPane jtable lista partite
 	private DefaultTableModel model;
-	private Object [] row = new Object[6];
+	private Object [] row = new Object[6]; // 6 colonne per la jtable
 	public JTextField textNomePartita;
 	private JTextField textData;
 	private JTextField textOra;
 	private JTextField textRichiesti;
 	private JTextField textIscritti;
 
-	private JButton btnReturn;
-	private JButton btnUnisciti;
+	private JButton btnReturn; // button di ritorno al menu principale
+	private JButton btnUnisciti; // button per partecipare alla partita selezionata
 
 	private JLabel lblNomePart;
 	private JLabel lblNick;
@@ -55,14 +55,13 @@ public class GameList {
 	private JLabel lblOra;
 
 
-	boolean start = true;
-	boolean flag = true;
+	boolean flag = true; // flag per il thread di controllo
 	int numeroIscritti;
 	private Timer timer; // timer per l'aggiornamento della jtable contenente la lista partite
-	private Match match;
+	private Match match; // classe match
 	private String nick;
 	private ArrayList<String> listNick; // arraylist degli iscritti alla i-esima partita
-	private Proxy proxy;
+	private Proxy proxy; // classe proxy
 	private ArrayList<Game> lista; // arraylist contenente tutti i campi della partita
 	private ManagementServerDb sb;
 	private String host; 
@@ -115,12 +114,12 @@ public class GameList {
 		table.getTableHeader().setReorderingAllowed(false); // non consentire il riordino delle colonne
 		table.getTableHeader().setResizingAllowed(false); // ridimensionamento non consentito
 		table.setDefaultEditor(Object.class,null); // campi non editabili
-		table.getColumnModel().getColumn(0).setPreferredWidth(75);
-		table.getColumnModel().getColumn(1).setPreferredWidth(70);
-		table.getColumnModel().getColumn(2).setPreferredWidth(65);
-		table.getColumnModel().getColumn(3).setPreferredWidth(85);
-		table.getColumnModel().getColumn(4).setPreferredWidth(75);
-		table.getColumnModel().getColumn(5).setPreferredWidth(270);
+		table.getColumnModel().getColumn(0).setPreferredWidth(75);  // larghezza colonne
+		table.getColumnModel().getColumn(1).setPreferredWidth(70);  // larghezza colonne
+		table.getColumnModel().getColumn(2).setPreferredWidth(65);  // larghezza colonne
+		table.getColumnModel().getColumn(3).setPreferredWidth(85);  // larghezza colonne
+		table.getColumnModel().getColumn(4).setPreferredWidth(75);  // larghezza colonne
+		table.getColumnModel().getColumn(5).setPreferredWidth(270); // larghezza colonne
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF); // autoridimensionamento disattivato
 
 		scrollPane = new JScrollPane(table);

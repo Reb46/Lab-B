@@ -20,7 +20,7 @@ public class Countdown {
 	private JLabel lblNewLabel;
 	private JLabel lblTimer;
 
-	Boolean flag = true;
+	Boolean flag = true; // flag per il thread di controllo
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -80,7 +80,7 @@ public class Countdown {
 
 				int i=5;
 				while(flag) {
-					while(i>0) {
+					while(i>0) { // finche i secondi sono maggiori di 0, il countdown non si ferma
 
 						lblCountdown.setText(""+i--);
 

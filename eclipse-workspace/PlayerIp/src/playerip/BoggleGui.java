@@ -30,14 +30,14 @@ public class BoggleGui {
 	// elementi gui
 	public JFrame frmParoliere;
 
-	private JPanel parolierePanel;
-	private JPanel panelTitle;
+	private JPanel parolierePanel; // panel per lo scacchiere
+	private JPanel panelTitle; // panel per il titolo del gioco
 	private Font font = new Font("Arial",Font.BOLD, 24);
 
-	private JTable jTableWord;
-	private JTable jTableScores;
-	private JScrollPane scrollWord;
-	private JScrollPane scrollPaneScores;
+	private JTable jTableWord; // jtable parole
+	private JTable jTableScores; // jtable punteggio
+	private JScrollPane scrollWord; // JScrollPane parole
+	private JScrollPane scrollPaneScores; // JScrollPane punteggio
 
 
 	private JLabel lblSession;
@@ -52,28 +52,28 @@ public class BoggleGui {
 	private JLabel lblNameGame;
 	private JLabel lblColons;
 
-	private Object [] rowWord = new Object[1];
-	private Object [] rowListScores = new Object[2];
+	private Object [] rowWord = new Object[1]; // una sola colonna per la jTableWord;
+	private Object [] rowListScores = new Object[2]; // 2 colonne per la jTableScores;
 
 	private JTextField textPartita;
-	private JTextField[][] boggle;
+	private JTextField[][] boggle; // jtextfield che conterranno le 16 lettere
 	private JTextField textWord;
 
-	private JButton btnSendWord;
-	private JButton btnExit;
+	private JButton btnSendWord; // button invio parole al db
+	private JButton btnExit; // button uscita
 
 
 
-	private String boxChar[][] = new String[4][4];
-	boolean flag = true;
-	int sec = 0;
-	int min = 2;
-	int punteggio;
-	private Word word;
-	private Proxy proxy;
-	private String nick;
-	int sessione = 1;
-	private ManagementServerDb sb;
+	private String boxChar[][] = new String[4][4]; // costruisco una matrice 4x4 di tipo string
+	boolean flag = true; // flag per il thread di controllo
+	int sec = 0; // secondi clessidra
+	int min = 2; // minuti clessidra
+	int punteggio; // punteggio player
+	private Word word; // classe word
+	private Proxy proxy; // classe proxy
+	private String nick; // nick giocatore
+	int sessione = 1; // sessione di gioco
+	private ManagementServerDb sb; // db server
 	private String host; 
 	private String userPostGres; 
 	private String passwPostGres;
@@ -289,9 +289,9 @@ public class BoggleGui {
 			}
 		}
 
-		host = proxy.getHost();
-		userPostGres = proxy.userPostGres();
-		passwPostGres = proxy.passwPostGres();
+		host = proxy.getHost(); // host db
+		userPostGres = proxy.userPostGres(); // user db
+		passwPostGres = proxy.passwPostGres(); // passw database
 		sb = new ManagementServerDb(host,userPostGres,passwPostGres);
 
 		// countdown clessidra di gioco
